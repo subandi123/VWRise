@@ -15,7 +15,37 @@ assert(not shared.RiseExecuted, "Rise Already Injected")
 shared.RiseExecuted = true
 shared.VapeExecuted = true
 
-for i,v in pairs({"rise", "rise/CustomModules", "rise/Profiles", "rise/Assets", "rise/Libraries"}) do if not isfolder(v) then makefolder(v) end end
+for i,v in pairs({"rise", "rise/CustomModules", "rise/Profiles", "rise/Assets", "rise/Libraries", "rise/fonts"}) do if not isfolder(v) then makefolder(v) end end
+
+local function riseGithubRequest(scripturl)
+    print("1", scripturl)
+	local suc, res = pcall(function() return game:HttpGet('https://raw.githubusercontent.com/VapeVoidware/VWRise/main/'..scripturl, true) end)
+	writefile("rise/"..scripturl, res)
+	return readfile("rise/"..scripturl)
+end
+
+local function downloadFonts()
+	local function downloadFont(path)
+	    print("2", path)
+		riseGithubRequest(path)
+	end
+	local res1 = "https://api.github.com/repos/VapeVoidware/VWRise/contents/fonts"
+	local res = game:HttpGet(res1, true)
+	local fonts = {}
+	if res ~= '404: Not Found' then 
+		for i,v in next, game:GetService("HttpService"):JSONDecode(res) do 
+			if type(v) == 'table' and v.name then 
+				table.insert(fonts, v.name) 
+			end
+		end
+	end
+	for i, v in pairs(fonts) do
+	    print("3", i, v)
+        downloadFont("fonts/"..fonts[i])
+        task.wait()
+    end
+end
+downloadFonts()
 
 GuiLibrary = pload("GuiLibrary.lua", true, true)
 VWFunctions = pload("Libraries/VoidwareFunctions.lua", true, true)
