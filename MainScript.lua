@@ -31,8 +31,6 @@ VWFunctions.GlobaliseObject("cprint", function(tbl) if tbl and type(tbl) == "tab
 shared.VoidwareFunctions = VWFunctions
 getgenv().VoidwareFunctions = VWFunctions
 
-print(VoidwareFunctions, VWFunctions)
-
 shared.risegui = GuiLibrary
 shared.GuiLibrary = GuiLibrary
 
