@@ -3,6 +3,8 @@ repeat task.wait() until game:IsLoaded()
 local GuiLibrary
 local VWFunctions
 
+shared.RiseMode = true
+
 local inputService = game:GetService("UserInputService")
 
 local queueonteleport = syn and syn.queue_on_teleport or queue_on_teleport or function() end
