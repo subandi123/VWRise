@@ -326,11 +326,11 @@ local function loadRise()
 						loadstring(readfile("rise/NewMainScript.lua"))()
 					else
 						shared.RiseMode = true
-						loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/vapevoidware/main/NewMainScript.lua", true))()
+						loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VWRise/main/NewMainScript.lua", true))()
 					end
 				else
 					shared.RiseMode = true
-					loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/vapevoidware/main/NewMainScript.lua", true))()
+					loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VWRise/main/NewMainScript.lua", true))()
 				end
 			end
 		]]
