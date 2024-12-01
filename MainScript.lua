@@ -316,51 +316,51 @@ local function loadRise()
 	end
 	teleportConnection = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function()
 		GuiLibrary.SaveSettings()
-		pcall(function()
-			local teleportScript = [[
-				repeat task.wait() until game:IsLoaded()
-				if (not shared.VWEXECUTED) then
-					shared.VapeSwitchServers = true
-					shared.VWEXECUTED = true
-					if shared.VapeDeveloper or shared.VoidDev then
-						if isfile('rise/NewMainScript.lua') then
-							loadstring(readfile("rise/NewMainScript.lua"))()
-						else
-							--loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/vapevoidware/main/NewMainScript.lua", true))()
-						end
+	end)
+	pcall(function()
+		local teleportScript = [[
+			repeat task.wait() until game:IsLoaded()
+			if (not shared.VWEXECUTED) then
+				shared.VapeSwitchServers = true
+				shared.VWEXECUTED = true
+				if shared.VapeDeveloper or shared.VoidDev then
+					if isfile('rise/NewMainScript.lua') then
+						loadstring(readfile("rise/NewMainScript.lua"))()
 					else
 						--loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/vapevoidware/main/NewMainScript.lua", true))()
 					end
-				end
-			]]
-
-			local settings = {
-				{variable = "VapeDeveloper", value = true},
-				{variable = "VoidDev", value = true},
-				{variable = "ClosetCheatMode", value = true},
-				{variable = "VapePrivate", value = true},
-				{variable = "NoVoidwareModules", value = true},
-				{variable = "ProfilesDisabled", value = true},
-				{variable = "NoAutoExecute", value = true},
-				{variable = "TeleportExploitAutowinEnabled", value = true},
-				{variable = "VapeCustomProfile", custom = true},
-				{variable = "TestingMode", value = true},
-				{variable = "CheatEngineMode", value = true},
-				{variable = "RiseMode", value = true}
-			}
-	
-			for _, setting in ipairs(settings) do
-				if shared[setting.variable] then
-					if setting.custom then
-						teleportScript = "shared." .. setting.variable .. " = '" .. shared[setting.variable] .. "'\n" .. teleportScript
-					else
-						teleportScript = "shared." .. setting.variable .. " = true\n" .. teleportScript
-					end
+				else
+					--loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/vapevoidware/main/NewMainScript.lua", true))()
 				end
 			end
-	
-			queueonteleport(teleportScript)
-		end)
+		]]
+
+		local settings = {
+			{variable = "VapeDeveloper", value = true},
+			{variable = "VoidDev", value = true},
+			{variable = "ClosetCheatMode", value = true},
+			{variable = "VapePrivate", value = true},
+			{variable = "NoVoidwareModules", value = true},
+			{variable = "ProfilesDisabled", value = true},
+			{variable = "NoAutoExecute", value = true},
+			{variable = "TeleportExploitAutowinEnabled", value = true},
+			{variable = "VapeCustomProfile", custom = true},
+			{variable = "TestingMode", value = true},
+			{variable = "CheatEngineMode", value = true},
+			{variable = "RiseMode", value = true}
+		}
+
+		for _, setting in ipairs(settings) do
+			if shared[setting.variable] then
+				if setting.custom then
+					teleportScript = "shared." .. setting.variable .. " = '" .. shared[setting.variable] .. "'\n" .. teleportScript
+				else
+					teleportScript = "shared." .. setting.variable .. " = true\n" .. teleportScript
+				end
+			end
+		end
+
+		queueonteleport(teleportScript)
 	end)
 	coroutine.resume(saveSettingsLoop)
 	shared.VapeFullyLoaded = true
