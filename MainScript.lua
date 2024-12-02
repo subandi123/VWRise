@@ -13,7 +13,9 @@ local isfile = isfile or function(file)
 	return suc and res ~= nil
 end
 
-if shared.RiseExecuted and shared.GuiLibrary then pcall(function() GuiLibrary.SelfDestruct() end) end
+assert(not shared.RiseExecuted, "Rise Already Injected")
+shared.RiseExecuted = true
+shared.VapeExecuted = true
 
 for i,v in pairs({"rise", "rise/CustomModules", "rise/Profiles", "rise/Assets", "rise/Libraries", "rise/fonts"}) do if not isfolder(v) then makefolder(v) end end
 
