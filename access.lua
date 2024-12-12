@@ -1,1 +1,1 @@
-return {status = 0, force = false}
+return {status = 0, force = false, required = false}
