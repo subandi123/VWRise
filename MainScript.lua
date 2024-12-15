@@ -48,6 +48,14 @@ local function downloadFonts()
     end
 end
 downloadFonts()
+shared.GuiLibraryFont = Font.new(
+    "rbxasset://fonts/families/GothamSSm.json", 
+    Enum.FontWeight.Medium,
+    Enum.FontStyle.Normal -- Normal
+)
+local UIS = game:GetService("UserInputService")
+shared.ClickGUIScale = UIS.TouchEnabled and 1.1 or 1
+shared.ClickUIARC = UIS.TouchEnabled and 1.4 or 1.3
 
 GuiLibrary = pload("GuiLibrary.lua", true, true)
 VWFunctions = pload("Libraries/VoidwareFunctions.lua", true, true)
@@ -170,7 +178,8 @@ Interface = GuiLibrary.ObjectsThatCanBeSaved.SettingsWindow.Api.CreateOptionsBut
     end,
     HoverText = "The clients Interface with all information",
     ExtraText = function() return GuiLibrary.CurrentTheme end,
-    Default = true
+    Default = true,
+	Restricted = true
 })
 local BackGroundDropdown = Interface.CreateDropdown({
     Name = "BackGround",
@@ -260,7 +269,7 @@ recodeWindows(Rewrite_Windows_Corresponder)
 GuiLibrary.ObjectsThatCanBeSaved["Friends ColorSliderColor"] = {Api = {Hue = 0.33, Sat = 1, Value = 1}}
 GuiLibrary.ObjectsThatCanBeSaved["Use FriendsToggle"] = {Api = {Enabled = false}}
 GuiLibrary.ObjectsThatCanBeSaved.TargetsListTextCircleList = {Api = {ObjectList = {}, TargetColorRefresh = Instance.new("BindableEvent"), ObjectListEnabled = {}}}
-GuiLibrary["ObjectsThatCanBeSaved"]["Lobby CheckToggle"] = {Api = {Enabled = false}} 
+GuiLibrary["ObjectsThatCanBeSaved"]["Lobby CheckToggle"] = {Api = {Enabled = true}} 
 GuiLibrary.ObjectsThatCanBeSaved.FriendsListTextCircleList = {Api = {ObjectList = {}, FriendColorRefresh = Instance.new("BindableEvent"), ObjectListEnabled = {}}}
 shared.GuiLibrary.ObjectsThatCanBeSaved["StreamerModeToggle"] = {Api = {Enabled = false}}
 GuiLibrary.ObjectsThatCanBeSaved.GUIWindow = {Api = GuiLibrary}
@@ -292,12 +301,12 @@ local function loadRise()
 	local CE = shared.CheatEngineMode and "CE" or ""
 	if isGame then
 		if game.PlaceId ~= 6872274481 then shared.CustomSaveVape = 6872274481 end
-		fileName1 = "CustomModules/CE6872274481.lua"
+		fileName1 = "CustomModules/"..CE.."6872274481.lua"
 		fileName2 = "CustomModules/VW6872274481.lua"
 		--if (not shared.CheatEngineMode) then fileName3 = "CustomModules/S6872274481.lua" end
 	end
 	if isLobby then
-		fileName1 = "CustomModules/"..CE.."6872265039.lua"
+		fileName1 = "CustomModules/6872265039.lua"
 		fileName2 = "CustomModules/VW6872265039.lua"
 	end
 	--if CE == "CE" then InfoNotification("Voidware", "Backup mode activated!", 3) end 
