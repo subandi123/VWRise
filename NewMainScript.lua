@@ -1,4 +1,5 @@
 repeat task.wait() until game:IsLoaded()
+shared.RiseMode = true
 shared.oldgetcustomasset = shared.oldgetcustomasset or getcustomasset
 task.spawn(function()
     repeat task.wait() until shared.VapeFullyLoaded
