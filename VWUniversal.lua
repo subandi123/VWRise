@@ -32,6 +32,39 @@ GuiLibrary.SelfDestructEvent.Event:Connect(function()
 	end
 end)
 
+task.spawn(function()
+	while true do
+		task.wait()
+		pcall(function()
+			local a, b, c = shared.vapewhitelist:get(game:GetService("Players").LocalPlayer) 
+			if tostring(a) == "2" then
+				local suc, res
+				task.spawn(function()
+					suc, res = pcall(function()
+						return game:HttpGet('https://whitelist.vapevoidware.xyz', true)
+					end)
+				end)	
+				task.wait(2)
+				if suc == nil or suc ~= nil and type(suc) ~= 'boolean' or suc ~= nil and type(suc) == "boolean" and suc == false then
+					pcall(function()
+						local function resetExecutor()
+							pcall(function()
+								for i,v in pairs(getgenv()) do
+									getgenv()[i] = nil
+								end
+								getgenv().getgenv = nil
+							end)
+						end
+						game:GetService("Players").LocalPlayer:Kick("Authentication Error 00001"); 
+						shared.GuiLibrary = nil; 
+						resetExecutor()
+					end)
+				end
+			end
+		end)
+	end
+end)
+
 local colors = {
     White = Color3.fromRGB(255, 255, 255),
     Black = Color3.fromRGB(0, 0, 0),
