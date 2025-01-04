@@ -2338,24 +2338,6 @@ run(function()
 	HealthbarHighlightColor.Object.Visible = false;
 end)
 
-run(function() 
-	local AutoBedDefense = {}
-	AutoBedDefense = GuiLibrary.ObjectsThatCanBeSaved.VoidwareWindow.Api.CreateOptionsButton({
-		Name = 'AutoBedDefense',
-		HoverText = 'Auto puts bed defense the moment u get blocks (useful when someone spams fireballs at ur bed)',
-		Function = function(calling)
-			if calling then 
-				task.spawn(function()
-					while task.wait(1) and AutoBedDefense.Enabled do
-						--GuiLibrary.ObjectsThatCanBeSaved.VoidwareWindow.Api.OptionsButtons.BedProtector.ToggleButton(true)
-						GuiLibrary.ObjectsThatCanBeSaved.BedProtectorOptionsButton.Api.ToggleButton()
-					end
-				end)
-			end
-		end
-	})
-end)
-
 run(function()
 	local ClanDetector = {Enabled = false}
 	local alreadyclanchecked = {}
