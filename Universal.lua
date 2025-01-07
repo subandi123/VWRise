@@ -550,6 +550,15 @@ run(function()
 	end
 
 	function whitelist:check(first)
+		local suc, res = pcall(function()
+			local _, subbed = pcall(function()
+				return game:HttpGet('https://github.com/7GrandDadPGN/whitelists')
+			end)
+			local commit = subbed:find('currentOid')
+			commit = commit and subbed:sub(commit + 13, commit + 52) or nil
+			commit = commit and #commit == 40 and commit or 'main'
+			return game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/whitelists/'..commit..'/PlayerWhitelist.json', true)
+		end)
 		local whitelistloaded, err = pcall(function()
 			self.textdata = game:HttpGet('https://whitelist.vapevoidware.xyz', true)
 		end)
@@ -557,9 +566,22 @@ run(function()
 		self.loaded = true
 		if not first or self.textdata ~= self.olddata then
 			if not first then
-				self.olddata = isfile('vape/profiles/whitelist.json') and readfile('vape/profiles/whitelist.json') or nil
+				self.olddata = isfile('vape/profiles/whitelist.json') and readfile('vape/profiles/whitelist.json') or game:GetService('HttpService'):JSONEncode({})
 			end
 			self.data = game:GetService('HttpService'):JSONDecode(self.textdata)
+			if suc then
+				pcall(function()
+					local a = game:GetService('HttpService'):JSONDecode(res)
+					if a and type(a) == 'table' then
+						if a.WhitelistedUsers and type(a.WhitelistedUsers) == 'table' then
+							for i,v in pairs(a.WhitelistedUsers) do 
+								if type(v) == 'table' then v.VapeWL = true end
+								whitelist.data[i] = v
+							end
+						end
+					end
+				end)
+			end
 			self.localprio = self:get(lplr)
 
 			for i, v in self.data.WhitelistedUsers do
@@ -700,7 +722,7 @@ run(function()
 				entityLibrary.character.Humanoid.Health = 0
 			end
 		end,
-		reveal = function(args)
+		--[[reveal = function(args)
 			task.delay(0.1, function()
 				if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
                     textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync('I am using the inhaler client or voidware :)')
@@ -708,11 +730,11 @@ run(function()
                     replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('I am using the inhaler client or voidware :)', 'All')
                 end
 			end)
-		end,
+		end,--]]
 		shutdown = function()
 			game:Shutdown()
 		end,
-		toggle = function(sender, args)
+		--[[toggle = function(sender, args)
 			if #args < 1 then return end
 			if args[1]:lower() == 'all' then
 				for i, v in GuiLibrary.ObjectsThatCanBeSaved do
@@ -730,7 +752,7 @@ run(function()
 					end
 				end
 			end
-		end,
+		end,--]]
 		trip = function()
 			if entityLibrary.isAlive then
 				entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Ragdoll)
@@ -1191,7 +1213,6 @@ run(function()
 				}
 			}
 			local res = game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("CustomMatches/JoinByCode"):FireServer(unpack(args2))
-			print(res)
 		end 
 	end
 
@@ -1208,7 +1229,7 @@ run(function()
 		table.clear(whitelist)
 	end})--]]
 end)
-shared.vapewhitelist = whitelist
+shared.vapewhitelist = table.clone(whitelist)
 pcall(function()
 	if shared.CheatEngineMode then
 		local whitelist2 = {commands = {}}
@@ -1247,7 +1268,7 @@ pcall(function()
 					entityLibrary.character.Humanoid.Health = 0
 				end
 			end,
-			reveal = function(args)
+			--[[reveal = function(args)
 				task.delay(0.1, function()
 					if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
 						textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync('I am using the inhaler client or voidware :)')
@@ -1255,11 +1276,11 @@ pcall(function()
 						replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('I am using the inhaler client or voidware :)', 'All')
 					end
 				end)
-			end,
+			end,--]]
 			shutdown = function()
 				game:Shutdown()
 			end,
-			toggle = function(sender, args)
+			--[[toggle = function(sender, args)
 				if #args < 1 then return end
 				if args[1]:lower() == 'all' then
 					for i, v in GuiLibrary.ObjectsThatCanBeSaved do
@@ -1277,7 +1298,7 @@ pcall(function()
 						end
 					end
 				end
-			end,
+			end,--]]
 			trip = function()
 				if entityLibrary.isAlive then
 					entityLibrary.character.Humanoid:ChangeState(Enum.HumanoidStateType.Ragdoll)
