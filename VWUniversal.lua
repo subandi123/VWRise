@@ -33,10 +33,13 @@ GuiLibrary.SelfDestructEvent.Event:Connect(function()
 end)
 
 task.spawn(function()
+	local strikes = 0
 	while true do
 		task.wait()
 		local suc, err = pcall(function()
 			local function trigger(check)
+				strikes = strikes + 1
+				if strikes < 3 then return end
 				pcall(function()
 					local function resetExecutor()
 						pcall(function()
