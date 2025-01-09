@@ -32,6 +32,7 @@ local function checkExecutor()
 end
 task.spawn(function() pcall(checkExecutor) end)
 local function checkRequire()
+    if CheatEngineMode then return end
     local bedwarsID = {
         game = {6872274481, 8444591321, 8560631822},
         lobby = {6872265039}
@@ -48,6 +49,7 @@ end
 --task.spawn(function() pcall(checkRequire) end)
 pcall(checkRequire)
 local function checkDebug()
+    if CheatEngineMode then return end
     if not getgenv().debug then 
         CheatEngineMode = true 
     else 
