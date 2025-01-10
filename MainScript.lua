@@ -26,6 +26,11 @@ local function riseGithubRequest(scripturl)
 	return readfile("rise/"..scripturl)
 end
 
+local suc, err = pcall(function()
+	return getrenv().require(game:GetService("CoreGui").RobloxGui.Modules.ErrorPrompt)
+end)
+if (not suc) then shared.CheatEngineMode = true end
+
 local function downloadFonts()
 	local function downloadFont(path)
 	    print("2", path)
