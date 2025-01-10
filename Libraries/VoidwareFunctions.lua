@@ -357,7 +357,7 @@ end
 task.spawn(function()
     repeat task.wait() until GuiLibrary and GuiLibrary.ObjectsThatCanBeSaved and GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow and GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api
     local ClosetCheatMode = {Enabled = false}
-    ClosetCheatMode = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+    --[[ClosetCheatMode = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
         Name = "ClosetCheatMode",
         Function = function(call, clicked)
             --print(clicked == false and "Ignored V2" or "Accepted V2")
@@ -369,7 +369,7 @@ task.spawn(function()
         end,
         NoSave = true,
         Restricted = true
-    })
+    })--]]
     if (not shared.RiseMode) then
         local function safeResolve(cond, name) if cond then return cond else warn(debug.traceback("[safeResolve]: Error! Condition not met. Name: "..tostring(name))) end end
         local children = safeResolve(safeResolve(safeResolve(safeResolve(GuiLibrary.MainGui:FindFirstChild("ScaledGui"), "ScaledGui"):FindFirstChild("ClickGui"), "ClickGui"):FindFirstChild("MainWindow"), "MainWindow"):FindFirstChild("Children"), "Children")
