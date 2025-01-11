@@ -156,11 +156,9 @@ local function warningNotification(title, text, delay)
 	return (suc and res)
 end
 
-local function run(func)
-	local suc, err = pcall(function()
-		func()
-	end)
-	if err then warn("[687224481.lua Module Error]: "..tostring(debug.traceback(err))); warningNotification("687224481.lua Module Error", tostring(debug.traceback(err)), 30) end
+local run = function(func)
+	local suc, err = pcall(function() func() end)
+	if (not suc) then errorNotification("Voidware 4481", 'Failure executing function: '..tostring(err), 3); warn(debug.traceback(tostring(err))) end
 end
 
 local function isFriend(plr, recolor)
