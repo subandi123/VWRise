@@ -32,7 +32,7 @@ GuiLibrary.SelfDestructEvent.Event:Connect(function()
 	end
 end)
 
-task.spawn(function()
+--[[task.spawn(function()
 	local strikes = 0
 	while true do
 		task.wait()
@@ -88,7 +88,7 @@ task.spawn(function()
 		end)
 		if (not suc) then warn('whitelist check error: '..tostring(err)) end
 	end
-end)
+end)--]]
 
 local colors = {
     White = Color3.fromRGB(255, 255, 255),
