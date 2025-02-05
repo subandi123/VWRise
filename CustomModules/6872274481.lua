@@ -722,6 +722,32 @@ local function EntityNearMouse(distance)
 	return closestEntity
 end
 
+-- Bedwars developer stupidity w stack overflow, insane developers.
+pcall(function()
+	local playersService = game:GetService("Players")
+	local lplr = playersService.LocalPlayer
+	bedwars.HudAliveCount = require(lplr.PlayerScripts.TS.controllers.global['top-bar'].ui.game['hud-alive-player-counts']).HudAlivePlayerCounts
+	local hudAliveRender = debug.getupvalue(debug.getupvalue(debug.getupvalue(bedwars.HudAliveCount.render, 3).render, 2).render, 1)
+	debug.setupvalue(hudAliveRender, 2, {
+		GetPlayers = function()
+			local loaded = {}
+			for _, plr in playersService:GetPlayers() do
+				if plr:GetAttribute('PlayerConnected') then
+					table.insert(loaded, plr)
+				end
+			end
+			return loaded
+		end,
+		PlayerAdded = playersService.PlayerAdded,
+		PlayerRemoving = playersService.PlayerRemoving
+	})
+
+	GuiLibrary.SelfDestructEvent.Event:Connect(function()
+		debug.setupvalue(hudAliveRender, 2, playersService)
+		hudAliveRender = nil
+	end)
+end)
+
 --[[local function AllNearPosition(distance, amount, sortfunction, prediction)
 	local returnedplayer = {}
 	local currentamount = 0
