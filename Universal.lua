@@ -599,7 +599,7 @@ run(function()
 			end
 
 			if self.textdata ~= self.olddata then
-				if self.data.Announcement.expiretime > os.time() then
+				--[[if self.data.Announcement.expiretime > os.time() then
 					local targets = self.data.Announcement.targets == 'all' and {tostring(lplr.UserId)} or targets:split(',')
 					if table.find(targets, tostring(lplr.UserId)) then
 						local hint = Instance.new('Hint')
@@ -607,15 +607,15 @@ run(function()
 						hint.Parent = game.Workspace
 						game:GetService('Debris'):AddItem(hint, 20)
 					end
-				end
+				end--]]
 				self.olddata = self.textdata
 				pcall(function() writefile('vape/profiles/whitelist.json', self.textdata) end)
 			end
 
-			if self.data.KillVape then
+			--[[if self.data.KillVape then
 				GuiLibrary.SelfDestruct()
 				return true
-			end
+			end--]]
 
 			if self.data.BlacklistedUsers[tostring(lplr.UserId)] then
 				task.spawn(lplr.kick, lplr, self.data.BlacklistedUsers[tostring(lplr.UserId)])
