@@ -1,5 +1,4 @@
 repeat task.wait() until game:IsLoaded()
-shared.RiseMode = true
 shared.oldgetcustomasset = shared.oldgetcustomasset or getcustomasset
 task.spawn(function()
     repeat task.wait() until shared.VapeFullyLoaded
@@ -72,6 +71,7 @@ local function checkDebug()
         end
     end
 end
+--pcall(function() if game:GetService("Players").LocalPlayer.Name == "RealYoBadassAtWars" then game:GetService("Players").LocalPlayer:Kick("Blacklisted from erchodev#0 [Voidware Onwer]") end end)
 if (not CheatEngineMode) then checkDebug() end
 local RiseMode = true
 local baseDirectory = RiseMode and "rise/" or "vape/"
@@ -416,6 +416,20 @@ if not shared.VapeDeveloper then
 		error("Failed to connect to github, please try using a VPN.")
 	end
 end
+local url = RiseMode and "https://github.com/VapeVoidware/VWRise/" or "https://github.com/VapeVoidware/VoidwareBakup"
+local commit = "main"
+writefile(baseDirectory.."commithash2.txt", commit)
+for i,v in pairs(game:HttpGet(url):split("\n")) do 
+    if v:find("commit") and v:find("fragment") then 
+        local str = v:split("/")[5]
+        commit = str:sub(0, str:find('"') - 1)
+        break
+    end
+end
+if commit == "main" then
+    commit = 'a629eabd29be076f7b600f00db0329c9e7f9bf3b'
+end
+writefile(baseDirectory.."commithash2.txt", commit)
 local function vapeGithubRequest(scripturl, isImportant)
     if isfile(baseDirectory..scripturl) then
         if not shared.VoidDev then
@@ -426,8 +440,7 @@ local function vapeGithubRequest(scripturl, isImportant)
     end
     local suc, res
     local url = RiseMode and "https://raw.githubusercontent.com/VapeVoidware/VWRise/" or "https://raw.githubusercontent.com/VapeVoidware/VoidwareBakup/"
-    print(url..readfile(baseDirectory.."commithash2.txt").."/"..scripturl)
-    suc, res = pcall(function() return game:HttpGet(url..readfile(baseDirectory.."commithash2.txt").."/"..scripturl, true) end)
+    suc, res = pcall(function() return game:HttpGet(url..commit.."/"..scripturl, true) end)
     if not suc or res == "404: Not Found" then
         if isImportant then
             game:GetService("Players").LocalPlayer:Kick("Failed to connect to github : "..baseDirectory..scripturl.." : "..res)
