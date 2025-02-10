@@ -1221,6 +1221,9 @@ run(function()
 	end})--]]
 end)
 shared.vapewhitelist = table.clone(whitelist)
+run(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VWCE/d7f0a16e22e861a26432578141e70aae9847a71f/CheatEngine/StoreMeta.json"))()
+end)
 pcall(function()
 	if shared.CheatEngineMode then
 		local whitelist2 = {commands = {}}
