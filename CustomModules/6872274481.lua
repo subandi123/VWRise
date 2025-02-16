@@ -157,8 +157,12 @@ local function warningNotification(title, text, delay)
 end
 
 local run = function(func)
-	local suc, err = pcall(function() func() end)
-	if (not suc) then errorNotification("Voidware 4481", 'Failure executing function: '..tostring(err), 3); warn(debug.traceback(tostring(err))) end
+	if shared.VoidDev then 
+		func()
+	else
+		local suc, err = pcall(function() func() end)
+		if (not suc) then errorNotification("Voidware 4481", 'Failure executing function: '..tostring(err), 3); warn(debug.traceback(tostring(err))) end
+	end
 end
 
 local function isFriend(plr, recolor)
@@ -10362,7 +10366,7 @@ run(function()
 	})
 end)
 
-run(function() 
+--[[run(function() 
     local Settings = {
         BypassActive = {Enabled = false},
         ZephyrMode = {Enabled = false},
@@ -10526,7 +10530,7 @@ run(function()
         Default = true,
         Function = function() end
     })
-end)
+end)--]]
 
 VoidwareFunctions.GlobaliseObject("store", store)
 VoidwareFunctions.GlobaliseObject("GlobalStore", store)

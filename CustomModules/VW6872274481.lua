@@ -569,7 +569,7 @@ local GetEnumItems = function() return {} end
 end)--]]
 
 run(function()
-	local PlayerLevelSet = {Enabled = false}
+	local PlayerLevelSet = {}
 	local PlayerLevel = {Value = 100}
 	PlayerLevelSet = GuiLibrary.ObjectsThatCanBeSaved.CustomisationWindow.Api.CreateOptionsButton({
 		Name = 'SetPlayerLevel',
@@ -2340,6 +2340,24 @@ run(function()
 	HealthbarHighlightColor.Object.Visible = false;
 end)
 
+run(function() 
+	local AutoBedDefense = {}
+	AutoBedDefense = GuiLibrary.ObjectsThatCanBeSaved.VoidwareWindow.Api.CreateOptionsButton({
+		Name = 'AutoBedDefense',
+		HoverText = 'Auto puts bed defense the moment u get blocks (useful when someone spams fireballs at ur bed)',
+		Function = function(calling)
+			if calling then 
+				task.spawn(function()
+					while task.wait(1) and AutoBedDefense.Enabled do
+						--GuiLibrary.ObjectsThatCanBeSaved.VoidwareWindow.Api.OptionsButtons.BedProtector.ToggleButton(true)
+						GuiLibrary.ObjectsThatCanBeSaved.BedProtectorOptionsButton.Api.ToggleButton()
+					end
+				end)
+			end
+		end
+	})
+end)
+
 run(function()
 	local ClanDetector = {Enabled = false}
 	local alreadyclanchecked = {}
@@ -3215,6 +3233,1809 @@ run(function()
 		Max = 10
 	})
 end)
+
+--[[run(function()
+	local MelodyExploit = {Enabled = false}
+	MelodyExploit = GuiLibrary.ObjectsThatCanBeSaved.ExploitsWindow.Api.CreateOptionsButton({
+		Name = "MelodyExploit",
+		Function = function(callback)
+			if callback then
+				warningNotification("MelodyExploit", "Requires a guitar! Recommended lucky blocks or melody kit", 3)
+				RunLoops:BindToHeartbeat("melody",function()			
+					if getItem("guitar") then
+						if lplr.Character:WaitForChild("Humanoid").Health < lplr.Character:WaitForChild("Humanoid").MaxHealth then
+							bedwars.Client:Get(bedwars.GuitarHealRemote):SendToServer({healTarget = lplr})
+							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("StopPlayingGuitar"):FireServer()
+						else
+							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("StopPlayingGuitar"):FireServer()
+						end
+					else
+						local args = {
+							[1] = {
+								["shopItem"] = {
+									["lockAfterPurchase"] = true,
+									["currency"] = "iron",
+									["itemType"] = "guitar",
+									["amount"] = 1,
+									["price"] = 16,
+									["category"] = "Combat",
+									["spawnWithItems"] = {
+										[1] = "guitar"
+									},
+									["requiresKit"] = {
+										[1] = "melody"
+									}
+								},
+								["shopId"] = "2_item_shop_1"
+							}
+						}
+						
+						game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("BedwarsPurchaseItem"):InvokeServer(unpack(args))
+					end
+				end)
+			else
+				RunLoops:UnbindFromHeartbeat("melody")
+			end
+		end
+	})
+
+	local Credits
+	Credits = MelodyExploit.CreateCredits({
+        Name = 'CreditsButtonInstance',
+        Credits = 'Cat V5 (qwertyui)'
+    })
+end)--]]
+
+run(function()
+	local HannahExploit = {Enabled = false}
+	HannahExploit = GuiLibrary.ObjectsThatCanBeSaved.ExploitsWindow.Api.CreateOptionsButton({
+		Name = "HannahExploit",
+		Function = function(callback)
+			if callback then
+				if tostring(store.queueType) == "training_room" or store.equippedKit == "hannah" then
+					RunLoops:BindToHeartbeat("hannah",function()
+						for i,v in pairs(game.Players:GetChildren()) do
+							local args = {
+								[1] = {
+									["user"] = game:GetService("Players").LocalPlayer,
+									["victimEntity"] = v.Character
+								}
+							}
+		
+							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("HannahPromptTrigger"):InvokeServer(unpack(args))
+							task.wait(0.1)
+						end
+					end)
+				else
+					HannahExploit["ToggleButton"](false) 
+					warningNotification("HannahExploit", "Hannah kit required for this to work!", 7)
+				end
+			else
+				RunLoops:UnbindFromHeartbeat("hannah")
+			end
+		end,
+		HovorText = "Sometimes you will teleport across the map with Hannah"
+	})
+	local Credits
+	Credits = HannahExploit.CreateCredits({
+        Name = 'CreditsButtonInstance',
+        Credits = 'CatV5'
+    })
+end)
+
+run(function()
+	local JellyFishExploit = {}
+	JellyFishExploit = GuiLibrary.ObjectsThatCanBeSaved.ExploitsWindow.Api.CreateOptionsButton({
+		Name = 'JellyFishExploit',
+		Function = function(calling)
+			if calling then 
+				task.spawn(function()
+					repeat task.wait()
+						local args = {
+							[1] = "electrify_jellyfish"
+						}
+						game:GetService("ReplicatedStorage"):WaitForChild("events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"):WaitForChild("useAbility"):FireServer(unpack(args))
+					until not JellyFishExploit.Enabled						
+				end)
+			end
+		end
+	})
+end)
+
+--[[run(function()
+	local insta = {Enabled = false}
+	insta = GuiLibrary.ObjectsThatCanBeSaved.ExploitsWindow.Api.CreateOptionsButton({
+		Name = "EmberInstakill",
+		Function = function(callback)
+			if callback then
+				warningNotification("EmberInstakill", "Ember blade is required for this to work", 3)
+				task.spawn(function()
+					repeat task.wait() until getItem("infernal_saber")
+					repeat 
+						pcall(function()
+							local args = {
+								[1] = {
+									["chargeTime"] = 1.3664593696594238,
+									["player"] = game:GetService("Players").LocalPlayer,
+									["weapon"] = getItem("infernal_saber")
+								}
+							}
+							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("HellBladeRelease"):FireServer(unpack(args))
+						end)
+						task.wait(0.1)
+					until (not insta.Enabled)
+				end)
+			end
+		end, 
+		HoverText = "🔥ember"
+	})
+end)--]]
+
+task.spawn(function()
+    local tweenmodules = {"BedTP", "EmeraldTP", "DiamondTP", "MiddleTP", "Autowin", "PlayerTP"}
+    local tweening = false
+    repeat
+    for i,v in pairs(tweenmodules) do
+        pcall(function()
+        if GuiLibrary.ObjectsThatCanBeSaved[v.."OptionsButton"].Api.Enabled then
+            tweening = true
+        end
+        end)
+    end
+    VoidwareStore.Tweening = tweening
+    tweening = false
+    task.wait()
+  until not vapeInjected
+end)
+local vapeAssert = function(argument, title, text, duration, hault, moduledisable, module) 
+	if not argument then
+    local suc, res = pcall(function()
+    local notification = GuiLibrary.CreateNotification(title or "Voidware", text or "Failed to call function.", duration or 20, "assets/WarningNotification.png")
+    notification.IconLabel.ImageColor3 = Color3.new(220, 0, 0)
+    notification.Frame.Frame.ImageColor3 = Color3.new(220, 0, 0)
+    if moduledisable and (module and GuiLibrary.ObjectsThatCanBeSaved[module.."OptionsButton"].Api.Enabled) then GuiLibrary.ObjectsThatCanBeSaved[module.."OptionsButton"].Api.ToggleButton(false) end
+    end)
+    if hault then while true do task.wait() end end end
+end
+local function GetMagnitudeOf2Objects(part, part2, bypass)
+	local magnitude, partcount = 0, 0
+	if not bypass then 
+		local suc, res = pcall(function() return part.Position end)
+		partcount = suc and partcount + 1 or partcount
+		suc, res = pcall(function() return part2.Position end)
+		partcount = suc and partcount + 1 or partcount
+	end
+	if partcount > 1 or bypass then 
+		magnitude = bypass and (part - part2).magnitude or (part.Position - part2.Position).magnitude
+	end
+	return magnitude
+end
+local function GetTopBlock(position, smart, raycast, customvector)
+	position = position or isAlive(lplr, true) and lplr.Character:WaitForChild("HumanoidRootPart").Position
+	if not position then 
+		return nil 
+	end
+	if raycast and not game.Workspace:Raycast(position, Vector3.new(0, -2000, 0), store.blockRaycast) then
+	    return nil
+    end
+	local lastblock = nil
+	for i = 1, 500 do 
+		local newray = game.Workspace:Raycast(lastblock and lastblock.Position or position, customvector or Vector3.new(0.55, 999999, 0.55), store.blockRaycast)
+		local smartest = newray and smart and game.Workspace:Raycast(lastblock and lastblock.Position or position, Vector3.new(0, 5.5, 0), store.blockRaycast) or not smart
+		if newray and smartest then
+			lastblock = newray
+		else
+			break
+		end
+	end
+	return lastblock
+end
+local function FindEnemyBed(maxdistance, highest)
+	local target = nil
+	local distance = maxdistance or math.huge
+	local whitelistuserteams = {}
+	local badbeds = {}
+	if not lplr:GetAttribute("Team") then return nil end
+	for i,v in pairs(playersService:GetPlayers()) do
+		if v ~= lplr then
+			local type, attackable = shared.vapewhitelist:get(v)
+			if not attackable then
+				whitelistuserteams[v:GetAttribute("Team")] = true
+			end
+		end
+	end
+	for i,v in pairs(collectionService:GetTagged("bed")) do
+			local bedteamstring = string.split(v:GetAttribute("id"), "_")[1]
+			if whitelistuserteams[bedteamstring] ~= nil then
+			   badbeds[v] = true
+		    end
+	    end
+	for i,v in pairs(collectionService:GetTagged("bed")) do
+		if v:GetAttribute("id") and v:GetAttribute("id") ~= lplr:GetAttribute("Team").."_bed" and badbeds[v] == nil and lplr.Character and lplr.Character.PrimaryPart then
+			if v:GetAttribute("NoBreak") or v:GetAttribute("PlacedByUserId") and v:GetAttribute("PlacedByUserId") ~= 0 then continue end
+			local magdist = GetMagnitudeOf2Objects(lplr.Character.PrimaryPart, v)
+			if magdist < distance then
+				target = v
+				distance = magdist
+			end
+		end
+	end
+	local coveredblock = highest and target and GetTopBlock(target.Position, true)
+	if coveredblock then
+		target = coveredblock.Instance
+	end
+	return target
+end
+local function FindTeamBed()
+	local bedstate, res = pcall(function()
+		return lplr.leaderstats.Bed.Value
+	end)
+	return bedstate and res and res ~= nil and res == "✅"
+end
+local function FindItemDrop(item)
+	local itemdist = nil
+	local dist = math.huge
+	local function abletocalculate() return lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") end
+    for i,v in pairs(collectionService:GetTagged("ItemDrop")) do
+		if v and v.Name == item and abletocalculate() then
+			local itemdistance = GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v)
+			if itemdistance < dist then
+			itemdist = v
+			dist = itemdistance
+		end
+		end
+	end
+	return itemdist
+end
+local function FindTarget(dist, blockRaycast, includemobs, healthmethod)
+	local whitelist = shared.vapewhitelist
+	local sort, entity = healthmethod and math.huge or dist or math.huge, {}
+	local function abletocalculate() return lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") end
+	local sortmethods = {Normal = function(entityroot, entityhealth) return abletocalculate() and GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), entityroot) < sort end, Health = function(entityroot, entityhealth) return abletocalculate() and entityhealth < sort end}
+	local sortmethod = healthmethod and "Health" or "Normal"
+	local function raycasted(entityroot) return abletocalculate() and blockRaycast and game.Workspace:Raycast(entityroot.Position, Vector3.new(0, -2000, 0), store.blockRaycast) or not blockRaycast and true or false end
+	for i,v in pairs(playersService:GetPlayers()) do
+		if v ~= lplr and abletocalculate() and isAlive(v) and v.Team ~= lplr.Team then
+			if not ({whitelist:get(v)})[2] then 
+				continue
+			end
+			if sortmethods[sortmethod](v.Character.HumanoidRootPart, v.Character:GetAttribute("Health") or v.Character.Humanoid.Health) and raycasted(v.Character.HumanoidRootPart) then
+				sort = healthmethod and v.Character.Humanoid.Health or GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.Character.HumanoidRootPart)
+				entity.Player = v
+				entity.Human = true 
+				entity.RootPart = v.Character.HumanoidRootPart
+				entity.Humanoid = v.Character.Humanoid
+			end
+		end
+	end
+	if includemobs then
+		local maxdistance = dist or math.huge
+		for i,v in pairs(store.pots) do
+			if abletocalculate() and v.PrimaryPart and GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.PrimaryPart) < maxdistance then
+			entity.Player = {Character = v, Name = "PotEntity", DisplayName = "PotEntity", UserId = 1}
+			entity.Human = false
+			entity.RootPart = v.PrimaryPart
+			entity.Humanoid = {Health = 1, MaxHealth = 1}
+			end
+		end
+		for i,v in pairs(collectionService:GetTagged("DiamondGuardian")) do 
+			if v.PrimaryPart and v:FindFirstChild("Humanoid") and v.Humanoid.Health and abletocalculate() then
+				if sortmethods[sortmethod](v.PrimaryPart, v.Humanoid.Health) and raycasted(v.PrimaryPart) then
+				sort = healthmethod and v.Humanoid.Health or GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.PrimaryPart)
+				entity.Player = {Character = v, Name = "DiamondGuardian", DisplayName = "DiamondGuardian", UserId = 1}
+				entity.Human = false
+				entity.RootPart = v.PrimaryPart
+				entity.Humanoid = v.Humanoid
+				end
+			end
+		end
+		for i,v in pairs(collectionService:GetTagged("GolemBoss")) do
+			if v.PrimaryPart and v:FindFirstChild("Humanoid") and v.Humanoid.Health and abletocalculate() then
+				if sortmethods[sortmethod](v.PrimaryPart, v.Humanoid.Health) and raycasted(v.PrimaryPart) then
+				sort = healthmethod and v.Humanoid.Health or GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.PrimaryPart)
+				entity.Player = {Character = v, Name = "Titan", DisplayName = "Titan", UserId = 1}
+				entity.Human = false
+				entity.RootPart = v.PrimaryPart
+				entity.Humanoid = v.Humanoid
+				end
+			end
+		end
+		for i,v in pairs(collectionService:GetTagged("Drone")) do
+			local plr = playersService:GetPlayerByUserId(v:GetAttribute("PlayerUserId"))
+			if plr and plr ~= lplr and plr.Team and lplr.Team and plr.Team ~= lplr.Team and ({VoidwareFunctions:GetPlayerType(plr)})[2] and abletocalculate() and v.PrimaryPart and v:FindFirstChild("Humanoid") and v.Humanoid.Health then
+				if sortmethods[sortmethod](v.PrimaryPart, v.Humanoid.Health) and raycasted(v.PrimaryPart) then
+					sort = healthmethod and v.Humanoid.Health or GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.PrimaryPart)
+					entity.Player = {Character = v, Name = "Drone", DisplayName = "Drone", UserId = 1}
+					entity.Human = false
+					entity.RootPart = v.PrimaryPart
+					entity.Humanoid = v.Humanoid
+				end
+			end
+		end
+		for i,v in pairs(collectionService:GetTagged("Monster")) do
+			if v:GetAttribute("Team") ~= lplr:GetAttribute("Team") and abletocalculate() and v.PrimaryPart and v:FindFirstChild("Humanoid") and v.Humanoid.Health then
+				if sortmethods[sortmethod](v.PrimaryPart, v.Humanoid.Health) and raycasted(v.PrimaryPart) then
+				sort = healthmethod and v.Humanoid.Health or GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.PrimaryPart)
+				entity.Player = {Character = v, Name = "Monster", DisplayName = "Monster", UserId = 1}
+				entity.Human = false
+				entity.RootPart = v.PrimaryPart
+				entity.Humanoid = v.Humanoid
+			end
+		end
+	end
+    end
+    return entity
+end
+local function isVulnerable(plr) return plr.Humanoid.Health > 0 and not plr.Character.FindFirstChildWhichIsA(plr.Character, "ForceField") end
+VoidwareFunctions.GlobaliseObject("isVulnarable", isVulnarable)
+local function EntityNearPosition(distance, ignore, overridepos)
+	local closestEntity, closestMagnitude = nil, distance
+	if entityLibrary.isAlive then
+		for i, v in pairs(entityLibrary.entityList) do
+			if not v.Targetable then continue end
+			if isVulnerable(v) then
+				local mag = (entityLibrary.character.HumanoidRootPart.Position - v.RootPart.Position).magnitude
+				if overridepos and mag > distance then
+					mag = (overridepos - v.RootPart.Position).magnitude
+				end
+				if mag <= closestMagnitude then
+					closestEntity, closestMagnitude = v, mag
+				end
+			end
+		end
+		if not ignore then
+			for i, v in pairs(game.Workspace:GetChildren()) do
+				if v.Name == "Void Enemy Dummy" or v.Name == "Emerald Enemy Dummy" or v.Name == "Diamond Enemy Dummy" or v.Name == "Leather Enemy Dummy" or v.Name == "Regular Enemy Dummy" or v.Name == "Iron Enemy Dummy" then
+					if v.PrimaryPart then
+						local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
+						if overridepos and mag > distance then
+							mag = (overridepos - v2.PrimaryPart.Position).magnitude
+						end
+						if mag <= closestMagnitude then
+							closestEntity, closestMagnitude = {Player = {Name = v.Name, UserId = (v.Name == "Duck" and 2020831224 or 1443379645)}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
+						end
+					end
+				end
+			end
+			for i, v in pairs(collectionService:GetTagged("Monster")) do
+				if v.PrimaryPart and v:GetAttribute("Team") ~= lplr:GetAttribute("Team") then
+					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
+					if overridepos and mag > distance then
+						mag = (overridepos - v2.PrimaryPart.Position).magnitude
+					end
+					if mag <= closestMagnitude then
+						closestEntity, closestMagnitude = {Player = {Name = v.Name, UserId = (v.Name == "Duck" and 2020831224 or 1443379645)}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
+					end
+				end
+			end
+			for i, v in pairs(collectionService:GetTagged("GuardianOfDream")) do
+				if v.PrimaryPart and v:GetAttribute("Team") ~= lplr:GetAttribute("Team") then
+					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
+					if overridepos and mag > distance then
+						mag = (overridepos - v2.PrimaryPart.Position).magnitude
+					end
+					if mag <= closestMagnitude then
+						closestEntity, closestMagnitude = {Player = {Name = v.Name, UserId = (v.Name == "Duck" and 2020831224 or 1443379645)}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
+					end
+				end
+			end
+			for i, v in pairs(collectionService:GetTagged("DiamondGuardian")) do
+				if v.PrimaryPart then
+					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
+					if overridepos and mag > distance then
+						mag = (overridepos - v2.PrimaryPart.Position).magnitude
+					end
+					if mag <= closestMagnitude then
+						closestEntity, closestMagnitude = {Player = {Name = "DiamondGuardian", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
+					end
+				end
+			end
+			for i, v in pairs(collectionService:GetTagged("GolemBoss")) do
+				if v.PrimaryPart then
+					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
+					if overridepos and mag > distance then
+						mag = (overridepos - v2.PrimaryPart.Position).magnitude
+					end
+					if mag <= closestMagnitude then
+						closestEntity, closestMagnitude = {Player = {Name = "GolemBoss", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
+					end
+				end
+			end
+			for i, v in pairs(collectionService:GetTagged("Drone")) do
+				if v.PrimaryPart and tonumber(v:GetAttribute("PlayerUserId")) ~= lplr.UserId then
+					local droneplr = playersService:GetPlayerByUserId(v:GetAttribute("PlayerUserId"))
+					if droneplr and droneplr.Team == lplr.Team then continue end
+					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
+					if overridepos and mag > distance then
+						mag = (overridepos - v.PrimaryPart.Position).magnitude
+					end
+					if mag <= closestMagnitude then -- magcheck
+						closestEntity, closestMagnitude = {Player = {Name = "Drone", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
+					end
+				end
+			end
+			for i,v in pairs(game.Workspace:GetChildren()) do
+				if v.Name == "InfectedCrateEntity" and v.ClassName == "Model" and v.PrimaryPart then
+					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
+					if overridepos and mag > distance then
+						mag = (overridepos - v.PrimaryPart.Position).magnitude
+					end
+					if mag <= closestMagnitude then -- magcheck
+						closestEntity, closestMagnitude = {Player = {Name = "InfectedCrateEntity", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
+					end
+				end
+			end
+			for i, v in pairs(store.pots) do
+				if v.PrimaryPart then
+					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
+					if overridepos and mag > distance then
+						mag = (overridepos - v.PrimaryPart.Position).magnitude
+					end
+					if mag <= closestMagnitude then -- magcheck
+						closestEntity, closestMagnitude = {Player = {Name = "Pot", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
+					end
+				end
+			end
+		end
+	end
+	return closestEntity
+end
+VoidwareFunctions.GlobaliseObject("EntityNearPosition", EntityNearPosition)
+--[[run(function()
+	local Autowin = {Enabled = false}
+	local AutowinNotification = {Enabled = true}
+	local bedtween
+	local playertween
+	Autowin = GuiLibrary.ObjectsThatCanBeSaved.HotWindow.Api.CreateOptionsButton({
+		Name = "Autowin",
+		ExtraText = function() return shared.GlobalStore and shared.GlobalStore.queueType:find("5v5") and "BedShield" or "Normal" end,
+		Function = function(callback)
+			if callback then
+				task.spawn(function()
+					repeat task.wait() until GuiLibrary.ObjectsThatCanBeSaved.InvisibilityOptionsButton
+					repeat task.wait() until GuiLibrary.ObjectsThatCanBeSaved.GamingChairOptionsButton
+					if GuiLibrary.ObjectsThatCanBeSaved.InvisibilityOptionsButton.Api.Enabled and GuiLibrary.ObjectsThatCanBeSaved.GamingChairOptionsButton.Api.Enabled then
+						errorNotification("Autowin", "Please turn off the Invisibility and GamingChair module!", 3)
+						Autowin.ToggleButton()
+						return
+					end
+					if GuiLibrary.ObjectsThatCanBeSaved.InvisibilityOptionsButton.Api.Enabled then
+						errorNotification("Autowin", "Please turn off the Invisibility module!", 3)
+						Autowin.ToggleButton()
+						return
+					end
+					if GuiLibrary.ObjectsThatCanBeSaved.GamingChairOptionsButton.Api.Enabled then
+						errorNotification("Autowin", "Please turn off the GamingChair module!", 3)
+						Autowin.ToggleButton()
+						return
+					end
+					task.spawn(function()
+						if store.matchState == 0 then repeat task.wait() until store.matchState ~= 0 or not Autowin.Enabled end
+						if not shared.VapeFullyLoaded then repeat task.wait() until shared.VapeFullyLoaded or not Autowin.Enabled end
+						if not Autowin.Enabled then return end
+						vapeAssert(not store.queueType:find("skywars"), "Autowin", "Skywars not supported.", 7, true, true, "Autowin")
+						if isAlive(lplr, true) then
+							lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+							lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+						end
+						table.insert(Autowin.Connections, runService.Heartbeat:Connect(function()
+							pcall(function()
+								if not isnetworkowner(lplr.Character:WaitForChild("HumanoidRootPart")) and (FindEnemyBed() and GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), FindEnemyBed()) > 75 or not FindEnemyBed()) then
+									if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled and store.matchState < 2 then
+										lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+										lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+									end
+								end
+							end)
+						end))
+						table.insert(Autowin.Connections, lplr.CharacterAdded:Connect(function()
+							if not isAlive(lplr, true) then repeat task.wait() until isAlive(lplr, true) end
+							local bed = FindEnemyBed()
+							if bed and (bed:GetAttribute("BedShieldEndTime") and bed:GetAttribute("BedShieldEndTime") < game.Workspace:GetServerTimeNow() or not bed:GetAttribute("BedShieldEndTime")) then
+								bedtween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0), {CFrame = CFrame.new(bed.Position) + Vector3.new(0, 10, 0)})
+								task.wait(0.1)
+								bedtween:Play()
+								bedtween.Completed:Wait()
+								task.spawn(function()
+									task.wait(1.5)
+									if lplr.Character:FindFirstChild("HumanoidRootPart") then
+										local magnitude = GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), bed)
+										if magnitude >= 50 and FindTeamBed() and Autowin.Enabled then
+											lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+											lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+										end
+									end
+								end)
+								if AutowinNotification.Enabled then
+									local function get_bed_team(id)
+										local teamName = "Unknown"
+										for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+											if v ~= game:GetService("Players").LocalPlayer then
+												if v:GetAttribute("Team") and tostring(v:GetAttribute("Team")) == tostring(id) then
+													teamName = tostring(v.Team)
+												end
+											end
+										end
+										return false, teamName
+									end
+									local suc, bedname = get_bed_team(bed:GetAttribute("TeamId"))
+									task.spawn(InfoNotification, "Autowin", "Destroying "..bedname:lower().." team's bed", 5)
+								end
+								repeat task.wait() until FindEnemyBed() ~= bed or not isAlive()
+								if EntityNearPosition(45) and EntityNearPosition(45).RootPart and isAlive() then
+									if AutowinNotification.Enabled then
+										local team = VoidwareStore.bedtable[bed] or "unknown"
+										task.spawn(InfoNotification, "Autowin", "Killing "..team:lower().." team's teamates", 5)
+									end
+									repeat
+										local target = EntityNearPosition(45)
+										if not target.RootPart then break end
+										playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
+										playertween:Play()
+										task.wait()
+									until not (EntityNearPosition(45) and EntityNearPosition(45).RootPart) or not Autowin.Enabled or not isAlive()
+								end
+								if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled then
+									lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+									lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+								end
+							elseif EntityNearPosition(45) and EntityNearPosition(45).RootPart then
+								local target = EntityNearPosition(45)
+								playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75, Enum.EasingStyle.Linear), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
+								playertween:Play()
+								if AutowinNotification.Enabled then
+									task.spawn(InfoNotification, "Autowin", "Killing "..target.Player.DisplayName.." ("..(target.Player.Team and target.Player.Team.Name or "neutral").." Team)", 5)
+								end
+								playertween.Completed:Wait()
+								if not Autowin.Enabled then return end
+								if EntityNearPosition(50) and EntityNearPosition(50).RootPart and isAlive() then
+									repeat
+										target = EntityNearPosition(50)
+										if not target.RootPart or not isAlive() then break end
+										playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
+										playertween:Play()
+										task.wait()
+									until not (EntityNearPosition(45) and EntityNearPosition(45).RootPart) or not Autowin.Enabled or not isAlive()
+								end
+								if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled then
+									lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+									lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+								end
+							elseif GetTarget(nil, false, true) and GetTarget(nil, false, true).RootPart then
+								local target = GetTarget(nil, false, true)
+								playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75, Enum.EasingStyle.Linear), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
+								playertween:Play()
+								if AutowinNotification.Enabled then task.spawn(InfoNotification, "Autowin", "Killing "..target.Player.DisplayName.." ("..(target.Player.Team and target.Player.Team.Name or "neutral").." Team)", 5) end
+								playertween.Completed:Wait()
+								if not Autowin.Enabled then return end
+								if EntityNearPosition(50) and EntityNearPosition(50).RootPart and isAlive() then
+									repeat
+										target = EntityNearPosition(50)
+										if not target.RootPart or not isAlive() then break end
+										playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
+										playertween:Play()
+										task.wait()
+									until not (EntityNearPosition(45) and EntityNearPosition(45).RootPart) or not Autowin.Enabled or not isAlive()
+								end
+								if isAlive(lplr, true) and GetTarget(nil, false, true) and GetTarget(nil, false, true).RootPart and Autowin.Enabled then
+									lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+									lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+								end
+							else
+								if shared.GlobalStore.matchState == 2 then return end
+								InfoNotification("Autowin", "No targets found! Retrying...", 1)
+								lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+								lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+							end
+						end))
+						table.insert(Autowin.Connections, lplr.CharacterAdded:Connect(function()
+							if not isAlive(lplr, true) then repeat task.wait() until isAlive(lplr, true) end
+							if not store.matchState == 2 then return end
+							local oldpos = lplr.Character:WaitForChild("HumanoidRootPart").CFrame
+							repeat 
+							lplr.Character:WaitForChild("HumanoidRootPart").CFrame = oldpos
+							task.wait()
+							until not isAlive(lplr, true) or not Autowin.Enabled
+						end))
+					end)
+				end)
+			else
+				pcall(function() playertween:Cancel() end)
+				pcall(function() bedtween:Cancel() end)
+			end
+		end,
+		HoverText = "best paid autowin 2023!1!!! rel11!11!1"
+	})
+end)--]]
+
+run(function()
+	local Autowin = {Enabled = false}
+	local AutowinNotification = {Enabled = true}
+	local bedtween
+	local playertween
+	Autowin = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+		Name = "Autowin",
+		ExtraText = function() return store.queueType:find("5v5") and "BedShield" or "Normal" end,
+		Function = function(callback)
+			if callback then
+				task.spawn(function()
+					if store.matchState == 0 then repeat task.wait() until store.matchState ~= 0 or not Autowin.Enabled end
+					if not shared.VapeFullyLoaded then repeat task.wait() until shared.VapeFullyLoaded or not Autowin.Enabled end
+					if not Autowin.Enabled then return end
+					vapeAssert(not store.queueType:find("skywars"), "Autowin", "Skywars not supported.", 7, true, true, "Autowin")
+					if isAlive(lplr, true) then
+						lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+						lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+					end
+					table.insert(Autowin.Connections, runService.Heartbeat:Connect(function()
+						pcall(function()
+							if not isnetworkowner(lplr.Character:WaitForChild("HumanoidRootPart")) and (FindEnemyBed() and GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), FindEnemyBed()) > 75 or not FindEnemyBed()) then
+								if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled and (not store.matchState == 2) then
+									lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+									lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+								end
+							end
+						end)
+					end))
+					table.insert(Autowin.Connections, lplr.CharacterAdded:Connect(function()
+						if not isAlive(lplr, true) then repeat task.wait() until isAlive(lplr, true) end
+						local bed = FindEnemyBed()
+						if bed and (bed:GetAttribute("BedShieldEndTime") and bed:GetAttribute("BedShieldEndTime") < workspace:GetServerTimeNow() or not bed:GetAttribute("BedShieldEndTime")) then
+						bedtween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.65, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0), {CFrame = CFrame.new(bed.Position) + Vector3.new(0, 10, 0)})
+						task.wait(0.1)
+						bedtween:Play()
+						bedtween.Completed:Wait()
+						task.spawn(function()
+						task.wait(1.5)
+						local magnitude = GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), bed)
+						if magnitude >= 50 and FindTeamBed() and Autowin.Enabled then
+							lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+							lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+						end
+						end)
+						if AutowinNotification.Enabled then
+							local bedname = VoidwareStore.bedtable[bed] or "unknown"
+							task.spawn(InfoNotification, "Autowin", "Destroying "..bedname:lower().." team's bed", 5)
+						end
+						if not isEnabled("Nuker") then
+							GuiLibrary.ObjectsThatCanBeSaved.NukerOptionsButton.Api.ToggleButton(false)
+						end
+						repeat task.wait() until FindEnemyBed() ~= bed or not isAlive()
+						if FindTarget(45, store.blockRaycast) and FindTarget(45, store.blockRaycast).RootPart and isAlive() then
+							if AutowinNotification.Enabled then
+								local team = VoidwareStore.bedtable[bed] or "unknown"
+								task.spawn(InfoNotification, "Autowin", "Killing "..team:lower().." team's teamates", 5)
+							end
+							repeat
+							local target = FindTarget(45, store.blockRaycast)
+							if not target.RootPart then break end
+							playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.30), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
+							playertween:Play()
+							task.wait()
+							until not (FindTarget(45, store.blockRaycast) and FindTarget(45, store.blockRaycast).RootPart) or not Autowin.Enabled or not isAlive()
+						end
+						if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled then
+							lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+							lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+						end
+						elseif FindTarget(nil, store.blockRaycast) and FindTarget(nil, store.blockRaycast).RootPart then
+							task.wait()
+							local target = FindTarget(nil, store.blockRaycast)
+							playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), target.RootPart) / 23.4 / 35, Enum.EasingStyle.Linear), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
+							playertween:Play()
+							if AutowinNotification.Enabled then
+								task.spawn(InfoNotification, "Autowin", "Killing "..target.Player.DisplayName.." ("..(target.Player.Team and target.Player.Team.Name or "neutral").." Team)", 5)
+							end
+							playertween.Completed:Wait()
+							if not Autowin.Enabled then return end
+								if FindTarget(50, store.blockRaycast).RootPart and isAlive() then
+									repeat
+									target = FindTarget(50, store.blockRaycast)
+									if not target.RootPart or not isAlive() then break end
+									playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.30), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
+									playertween:Play()
+									task.wait()
+									until not (FindTarget(50, store.blockRaycast) and FindTarget(50, store.blockRaycast).RootPart) or (not Autowin.Enabled) or (not isAlive())
+								end
+							if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled then
+								lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+								lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+							end
+						else
+						if store.matchState == 2 then return end
+						lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
+						lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
+						end
+					end))
+					table.insert(Autowin.Connections, lplr.CharacterAdded:Connect(function()
+						if (not isAlive(lplr, true)) then repeat task.wait() until isAlive(lplr, true) end
+						if (not store.matchState == 2) then return end
+						local oldpos = lplr.Character:WaitForChild("HumanoidRootPart").CFrame
+						repeat 
+						lplr.Character:WaitForChild("HumanoidRootPart").CFrame = oldpos
+						task.wait()
+						until (not isAlive(lplr, true)) or (not Autowin.Enabled)
+					end))
+				end)
+			else
+				pcall(function() playertween:Cancel() end)
+				pcall(function() bedtween:Cancel() end)
+			end
+		end,
+		HoverText = "best paid autowin 2023!1!!! rel11!11!1"
+	})
+end)
+
+--[[run(function()
+	local function getItemNear(itemName, inv)
+        for slot, item in pairs(inv or store.localInventory.inventory.items) do
+            if item.itemType == itemName or item.itemType:find(itemName) then
+                return item, slot
+            end
+        end
+        return nil
+    end
+	local Disabler = {Enabled = false}
+	local ZephyrSpeed = {Value = 1}
+	local DisablerMode = {Value = "Scythe"}
+	local mode = "Scythe"
+	local sd = false
+	local csd = false
+	local zd = false
+	local fd = false
+	local function DeleteClientSidedAnticheat()
+		if lplr.PlayerScripts.Modules:FindFirstChild("anticheat") then
+			lplr.PlayerScripts.Modules.anticheat:Destroy()
+		end
+		if lplr.PlayerScripts:FindFirstChild("GameAnalyticsClient") then
+			lplr.PlayerScripts.GameAnalyticsClient:Destroy()
+		end
+		if game:GetService("ReplicatedStorage").Modules:FindFirstChild("anticheat") then
+			game:GetService("ReplicatedStorage").Modules:FindFirstChild("anticheat"):Destroy()
+		end
+	end
+	Disabler = GuiLibrary.ObjectsThatCanBeSaved.VoidwareWindow.Api.CreateOptionsButton({
+		Name = "Disabler",
+		Function = function(callback)
+			if callback then
+				task.spawn(function()
+					repeat
+						task.wait()
+						if zd then
+							shared.disablerZephyr = true
+						else
+							shared.disablerZephyr = false
+						end
+						if fd then
+							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("TridentUnanchor"):InvokeServer()
+							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("TridentAnchor"):InvokeServer()
+						end
+						if sd then
+							local item = getItemNear("scythe")
+							if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then 
+								bedwars.Client:Get("ScytheDash"):SendToServer({direction = lplr.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector*9e9})
+								if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
+									shared.GlobalStore.scythe = tick() + 1
+								end
+							end
+						end
+					until (not Disabler.Enabled)
+				end)
+				if csd then
+					DeleteClientSidedAnticheat()
+					warningNotification("Cat", "Disabled Client", 3)
+				end
+			else
+				shared.disablerZephyr = false
+			end
+		end,
+		HoverText = "Attempts to help bypass the AntiCheat",
+		ExtraText = function()
+			return "Heatseeker"
+		end
+	})
+	ClientS = Disabler.CreateToggle({
+		Name = "Client Sided",
+		Default = true,
+		Function = function(callback)
+			csd = callback
+			Disabler.ToggleButton(false)
+			Disabler.ToggleButton(false)
+		end
+	})
+	Scythe = Disabler.CreateToggle({
+		Name = "Scythe",
+		Default = true,
+		Function = function(callback)
+			sd = callback
+			Disabler.ToggleButton(false)
+			Disabler.ToggleButton(false)
+		end
+	})
+	Zephyr = Disabler.CreateToggle({
+		Name = "Zephyr",
+		Default = true,
+		Function = function(callback)
+			zd = callback
+			Disabler.ToggleButton(false)
+			Disabler.ToggleButton(false)
+		end
+	})
+	--[[Float = Disabler.CreateToggle({
+		Name = "Float (EXPERIMENTAL)",
+		Default = true,
+		Function = function(callback)
+			fd = callback
+			Disabler.ToggleButton(false)
+			Disabler.ToggleButton(false)
+		end
+	})]]--
+	--[[ZephyrSpeed = Disabler.CreateSlider({
+		Name = "Speed Multiplier",
+		Min = 0,
+		Max = 2,
+		Function = function(callback)
+			shared.disablerBoost = callback
+			Disabler.ToggleButton(false)
+			Disabler.ToggleButton(false)
+		end,
+		Default = 1
+	})
+end)--]]
+
+run(function()
+	local GetHost = {Enabled = false}
+	GetHost = GuiLibrary.ObjectsThatCanBeSaved.VoidwareWindow.Api.CreateOptionsButton({
+		Name = "GetHost",
+		HoverText = ":troll:",
+		Function = function(callback) 
+			if callback then
+				task.spawn(function()
+					warningNotification("GetHost", "This module is only for show. None of the settings will work.", 5)
+					game.Players.LocalPlayer:SetAttribute("CustomMatchRole", "host")
+				end)
+			end
+		end
+	})
+end)
+
+run(function()
+	local lplr = game:GetService("Players").LocalPlayer
+	local lplr_gui = lplr.PlayerGui
+
+	local function handle_tablist(ui)
+		local frame = ui:FindFirstChild("TabListFrame")
+		if frame then
+			local plrs_frame = frame:FindFirstChild("4"):FindFirstChild("1")
+			if plrs_frame then
+				local side_1 = plrs_frame:WaitForChild("2")
+				local side_2 = plrs_frame:WaitForChild("3")
+				local sides = {side_1, side_2}
+
+				for _, side in pairs(sides) do
+					if side then
+						--print("Processing side:", side.Name)
+						local side_teams = {}
+						local side_teams_players = {}
+
+						for _, child in pairs(side:GetChildren()) do
+							if child:IsA("Frame") then
+								table.insert(side_teams, child)
+							end
+						end
+
+						for _, team in pairs(side_teams) do
+							local team_plrs_list = team:WaitForChild("3")
+							local plrs = team_plrs_list:GetChildren()
+
+							for _, plr in pairs(plrs) do
+								if plr:IsA("Frame") and plr.Name == "PlayerRowContainer" then
+									table.insert(side_teams_players, plr)
+								end
+							end
+						end
+
+						for _, player_row in pairs(side_teams_players) do
+							local plr_name_frame = player_row:WaitForChild("Content"):WaitForChild("PlayerRow"):WaitForChild("3"):WaitForChild("PlayerNameContainer"):WaitForChild("3"):WaitForChild("2"):FindFirstChild("PlayerName")
+
+							if plr_name_frame then
+								local function extract_name(formatted_text)
+									local name = formatted_text:match("</font>%s*(.+)")
+									return name
+								end
+
+								local current_text = plr_name_frame.Text
+								local name = extract_name(current_text)
+								local streamer_mode = true
+
+								for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+									if player.DisplayName == name then
+										streamer_mode = false
+										break
+									end
+								end
+
+								if not streamer_mode then
+									local needed_plr
+									for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+										if game:GetService("Players"):GetPlayers()[i].DisplayName == name then
+											needed_plr = game:GetService("Players"):GetPlayers()[i]
+										end
+									end
+									if needed_plr then
+										local function get_player_rank(player)
+											local rank = shared.vapewhitelist:get(player)
+											if rank == 1 then
+												return "INF"
+											elseif rank == 2 then
+												return "Owner"
+											else
+												return "Normal"
+											end
+										end
+										local rank = get_player_rank(needed_plr)
+										local function add_colored_text(existing_text, new_text, color3)
+											local r = math.floor(color3.R * 255)
+											local g = math.floor(color3.G * 255)
+											local b = math.floor(color3.B * 255)
+											local new_colored_text = string.format('<font color="rgb(%d,%d,%d)">[%s]</font> ', r, g, b, new_text)
+											local updated_text = new_colored_text .. existing_text
+											return updated_text
+										end
+
+										local tag_data = shared.vapewhitelist:tag(needed_plr)
+										if tag_data and #tag_data > 0 then
+											if tag_data[1]["text"] == "VOIDWARE USER" then rank = "Normal" end
+											local tag_text = tag_data[1]["text"].." - "..rank
+											local tag_color = tag_data[1]["color"]
+											local updated_text = add_colored_text(current_text, tag_text, tag_color)
+											
+											if updated_text then
+												plr_name_frame.Text = updated_text
+											end
+										else
+											print("Tag data missing for player:", name)
+										end
+									end
+								else
+									print("Streamer mode is on for player:", name)
+								end
+							else
+								print("PlayerName frame not found for player row")
+							end
+						end
+					else
+						print("Side is nil")
+					end
+				end
+			else
+				print("Players frame not found")
+			end
+		else
+			print("TabListFrame not found")
+		end
+	end
+
+	local function handle_new_ui(ui)
+		if tostring(ui) == "TabListScreenGui" then
+			handle_tablist(ui)
+		end
+	end
+
+	lplr_gui.ChildAdded:Connect(handle_new_ui)
+end)
+
+run(function()
+	local HackerDetector = {}
+	local HackerDetectorInfFly = {}
+	local HackerDetectorTeleport = {}
+	local HackerDetectorNuker = {}
+	local HackerDetectorFunny = {}
+	local HackerDetectorInvis = {}
+	local HackerDetectorName = {}
+	local HackerDetectorSpeed = {}
+	local HackerDetectorFileCache = {}
+	local pastesploit
+	local detectedusers = {
+		InfiniteFly = {},
+		Teleport = {},
+		Nuker = {},
+		AnticheatBypass = {},
+		Invisibility = {},
+		Speed = {},
+		Name = {},
+		Cache = {}
+	}
+	local distances = {
+		windwalker = 80
+	}
+	local function cachedetection(player, detection)
+		if not HackerDetectorFileCache.Enabled then 
+			return 
+		end
+		if type(response) ~= 'table' then 
+			response = {}
+		end
+		if response[player.Name] then 
+			if table.find(response[player.Name], detection) == nil then 
+				table.insert(response[player.Name].Detections, detection) 
+			end
+		else
+			response[player.Name] = {DisplayName = player.DisplayName, UserId = tostring(player.DisplayName), Detections = {detection}}
+		end
+	end
+	local detectionmethods = {
+		Teleport = function(plr)
+			if table.find(detectedusers.Teleport, plr) then 
+				return 
+			end
+			if store.queueType:find('bedwars') == nil or plr:GetAttribute('Spectator') then 
+				return 
+			end
+			local lastbwteleport = plr:GetAttribute('LastTeleported')
+			table.insert(HackerDetector.Connections, plr:GetAttributeChangedSignal('LastTeleported'):Connect(function() lastbwteleport = plr:GetAttribute('LastTeleported') end))
+			table.insert(HackerDetector.Connections, plr.CharacterAdded:Connect(function()
+				oldpos = Vector3.zero
+				if table.find(detectedusers.Teleport, plr) then 
+					return 
+				end
+				 repeat task.wait() until isAlive(plr, true)
+				 local oldpos2 = plr.Character.HumanoidRootPart.Position 
+				 task.delay(2, function()
+					if isAlive(plr, true) then 
+						local newdistance = (plr.Character.HumanoidRootPart.Position - oldpos2).Magnitude 
+						if newdistance >= 400 and (plr:GetAttribute('LastTeleported') - lastbwteleport) == 0 then 
+							InfoNotification('HackerDetector', plr.DisplayName..' is using Teleport Exploit!', 100) 
+							table.insert(detectedusers.Teleport, plr)
+							cachedetection(plr, 'Teleport')
+							whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
+						end 
+					end
+				 end)
+			end))
+		end,
+		Speed = function(plr) 
+			repeat task.wait() until (store.matchState ~= 0 or not HackerDetector.Enabled or not HackerDetectorSpeed.Enabled)
+			if table.find(detectedusers.Speed, plr) then 
+				return 
+			end
+			local lastbwteleport = plr:GetAttribute('LastTeleported')
+			local oldpos = Vector3.zero 
+			table.insert(HackerDetector.Connections, plr:GetAttributeChangedSignal('LastTeleported'):Connect(function() lastbwteleport = plr:GetAttribute('LastTeleported') end)) 
+			table.insert(HackerDetector.Connections, plr.CharacterAdded:Connect(function() oldpos = Vector3.zero end))
+			repeat 
+				if isAlive(plr, true) then 
+					local magnitude = (plr.Character.HumanoidRootPart.Position - oldpos).Magnitude
+					if (plr:GetAttribute('LastTeleported') - lastbwteleport) ~= 0 and magnitude >= ((distances[plr:GetAttribute('PlayingAsKit') or ''] or 25) + (playerRaycasted(plr, Vector3.new(0, -15, 0)) and 0 or 40)) then 
+						InfoNotification('HackerDetector', plr.DisplayName..' is using speed!', 60)
+						whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
+					end
+					oldpos = plr.Character.HumanoidRootPart.Position
+					task.wait(2.5)
+					lastbwteleport = plr:GetAttribute('LastTeleported')
+				end
+			until not task.wait() or table.find(detectedusers.Speed, plr) or (not HackerDetector.Enabled or not HackerDetectorSpeed.Enabled)
+		end,
+		InfiniteFly = function(plr) 
+			pcall(function()
+				repeat 
+					if isAlive(plr, true) then 
+						local magnitude = (lplr.Character:WaitForChild("HumanoidRootPart").Position - plr.Character.HumanoidRootPart.Position).Magnitude
+						if magnitude >= 10000 and playerRaycast(plr) == nil and playerRaycast({Character = {PrimaryPart = {Position = lplr.Character:WaitForChild("HumanoidRootPart").Position}}}) then 
+							InfoNotification('HackerDetector', plr.DisplayName..' is using InfiniteFly!', 60) 
+							cachedetection(plr, 'InfiniteFly')
+							table.insert(detectedusers.InfiniteFly, plr)
+							whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
+						end
+						task.wait(2.5)
+					end
+				until not task.wait() or table.find(detectedusers.InfiniteFly, plr) or (not HackerDetector.Enabled or not HackerDetectorInfFly.Enabled)
+			end)
+		end,
+		Invisibility = function(plr) 
+			pcall(function()
+				if table.find(detectedusers.Invisibility, plr) then 
+					return 
+				end
+				repeat 
+					for i,v in next, (isAlive(plr, true) and plr.Character.Humanoid:GetPlayingAnimationTracks() or {}) do 
+						if v.Animation.AnimationId == 'http://www.roblox.com/asset/?id=11335949902' or v.Animation.AnimationId == 'rbxassetid://11335949902' then 
+							InfoNotification('HackerDetector', plr.DisplayName..' is using Invisibility!', 60) 
+							table.insert(detectedusers.Invisibility, plr)
+							cachedetection(plr, 'Invisibility')
+							whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
+						end
+					end
+					task.wait(0.5)
+				until table.find(detectedusers.Invisibility, plr) or (not HackerDetector.Enabled or not HackerDetectorInvis.Enabled)
+			end)
+		end,
+		Name = function(plr) 
+			pcall(function()
+				repeat task.wait() until pastesploit 
+				local lines = pastesploit:split('\n') 
+				for i,v in next, lines do 
+					if v:find('local Owner = ') then 
+						local name = lines[i]:gsub('local Owner =', ''):gsub('"', ''):gsub("'", '') 
+						if plr.Name == name then 
+							InfoNotification('HackerDetector', plr.DisplayName..' is the owner of Godsploit! They\'re is most likely cheating.', 60) 
+							cachedetection(plr, 'Name')
+							whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
+						end
+					end
+				end
+				for i,v in next, ({'godsploit', 'alsploit', 'renderintents'}) do 
+					local user = plr.Name:lower():find(v) 
+					local display = plr.DisplayName:lower():find(v)
+					if user or display then 
+						InfoNotification('HackerDetector', plr.DisplayName..' has "'..v..'" in their '..(user and 'username' or 'display name')..'! They might be cheating.', 20)
+						cachedetection(plr, 'Name') 
+						return 
+					end
+				end
+			end)
+		end, 
+		Cache = function(plr)
+			local success, response = pcall(function()
+				return httpService:JSONDecode(readfile('vape/Libraries/exploiters.json')) 
+			end) 
+			if type(response) == 'table' and response[plr.Name] then 
+				InfoNotification('HackerDetector', plr.DisplayName..' is cached on the exploiter database!', 30)
+				table.insert(detectedusers.Cached, plr)
+				whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
+			end
+		end
+	}
+	local function bootdetections(player)
+		local detectiontoggles = {InfiniteFly = HackerDetectorInfFly, Teleport = HackerDetectorTeleport, Nuker = HackerDetectorNuker, Invisibility = HackerDetectorInvis, Speed = HackerDetectorSpeed, Name = HackerDetectorName, Cache = HackerDetectorFileCache}
+		for i, detection in next, detectionmethods do 
+			if detectiontoggles[i].Enabled then
+			   task.spawn(detection, player)
+			end
+		end
+	end
+	HackerDetector = GuiLibrary.ObjectsThatCanBeSaved.HotWindow.Api.CreateOptionsButton({
+		Name = 'HackerDetector',
+		HoverText = 'Notify when someone is\nsuspected of using exploits.',
+		ExtraText = function() return 'Vanilla' end,
+		Function = function(calling) 
+			if calling then 
+				for i,v in next, playersService:GetPlayers() do 
+					if v ~= lplr then 
+						bootdetections(v) 
+					end 
+				end
+				table.insert(HackerDetector.Connections, playersService.PlayerAdded:Connect(bootdetections))
+			end
+		end
+	})
+	HackerDetectorTeleport = HackerDetector.CreateToggle({
+		Name = 'Teleport',
+		Default = true,
+		Function = function() end
+	})
+	HackerDetectorInfFly = HackerDetector.CreateToggle({
+		Name = 'InfiniteFly',
+		Default = true,
+		Function = function() end
+	})
+	HackerDetectorInvis = HackerDetector.CreateToggle({
+		Name = 'Invisibility',
+		Default = true,
+		Function = function() end
+	})
+	HackerDetectorNuker = HackerDetector.CreateToggle({
+		Name = 'Nuker',
+		Default = true,
+		Function = function() end
+	})
+	HackerDetectorSpeed = HackerDetector.CreateToggle({
+		Name = 'Speed',
+		Default = true,
+		Function = function() end
+	})
+	HackerDetectorName = HackerDetector.CreateToggle({
+		Name = 'Name',
+		Default = true,
+		Function = function() end
+	})
+	HackerDetectorFileCache = HackerDetector.CreateToggle({
+		Name = 'Cached detections',
+		HoverText = 'Writes (vape/Libraries/exploiters.json)\neverytime someone is detected.',
+		Default = true,
+		Function = function() end
+	})
+end)
+
+run(function()
+	local DoubleHighJump = {Enabled = false}
+	local DoubleHighJumpHeight = {Value = 500}
+	local DoubleHighJumpHeight2 = {Value = 500}
+	local jumps = 0
+	DoubleHighJump = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+		Name = "DoubleHighJump",
+		NoSave = true,
+		HoverText = "A very interesting high jump.",
+		Function = function(callback)
+			if callback then 
+				task.spawn(function()
+					if entityLibrary.isAlive and lplr.Character:WaitForChild("Humanoid").FloorMaterial == Enum.Material.Air or jumps > 0 then 
+						DoubleHighJump.ToggleButton(false) 
+						return
+					end
+					for i = 1, 2 do 
+						if not entityLibrary.isAlive then
+							DoubleHighJump.ToggleButton(false) 
+							return  
+						end
+						if i == 2 and lplr.Character:WaitForChild("Humanoid").FloorMaterial ~= Enum.Material.Air then 
+							continue
+						end
+						lplr.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0, i == 1 and DoubleHighJumpHeight.Value or DoubleHighJumpHeight2.Value, 0)
+						jumps = i
+						task.wait(i == 1 and 1 or 0.3)
+					end
+					task.spawn(function()
+						for i = 1, 20 do 
+							if entityLibrary.isAlive then 
+								lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Landed)
+							end
+						end
+					end)
+					task.delay(1.6, function() jumps = 0 end)
+					if DoubleHighJump.Enabled then
+					   DoubleHighJump.ToggleButton(false)
+					end
+				end)
+			else
+				VoidwareStore.jumpTick = tick() + 5
+			end
+		end
+	})
+	DoubleHighJumpHeight = DoubleHighJump.CreateSlider({
+		Name = "First Jump",
+		Min = 50,
+		Max = 500,
+		Default = 500,
+		Function = function() end
+	})
+	DoubleHighJumpHeight2 = DoubleHighJump.CreateSlider({
+		Name = "Second Jump",
+		Min = 50,
+		Max = 450,
+		Default = 450,
+		Function = function() end
+	})
+end)
+
+--[[local StaffDetector = {Enabled = false}
+run(function()
+	local StaffDetector_Functions = {}
+	local StaffDetector_Table = {
+		Friends = {}
+	}
+	local StaffDetector_Action = {
+		DropdownValue = {Value = "Uninject"},
+		FunctionsTable = {
+			["Uninject"] = function()
+				GuiLibrary.SelfDestruct()
+			end, 
+			["Panic"] = function() 
+				task.spawn(function()
+					coroutine.close(shared.saveSettingsLoop)
+				end)
+				GuiLibrary.SaveSettings()
+				function GuiLibrary.SaveSettings()
+					return warningNotification("StaffDetector", "Saving Settings has been prevented from staff detector!", 1.5)
+				end
+				warningNotification("StaffDetector", "Saving settings has been disabled!", 1.5)
+				task.spawn(function()
+					repeat task.wait() until shared.GuiLibrary.ObjectsThatCanBeSaved.PanicOptionsButton
+					shared.GuiLibrary.ObjectsThatCanBeSaved.PanicOptionsButton.Api.ToggleButton(false)
+				end)
+			end,
+			["Lobby"] = function() 
+				TPService:Teleport(6872265039)
+			end
+		},
+	}
+	local StaffDetector_CustomBlacklist = {
+		Toggle = {Enabled = false},
+		TextList = {ObjectList = {}},
+		YoutuberToggle = {Enabled = false}
+	}
+	local StaffDetector_ReadStaffData = {Enabled = false}
+	local StaffDetector_Connections = {}
+	local TPService = game:GetService('TeleportService')
+	local HTTPService = game:GetService("HttpService")
+	local Players = game:GetService("Players")
+	function StaffDetector_Functions.SaveStaffData(staff, detection_type)
+		local suc, err = pcall(function()
+			return HTTPService:JSONDecode(readfile('vape/Libraries/StaffData.json'))
+		end)
+		local json = {}
+		if suc then
+			json = err
+		end
+		table.insert(json,{
+			StaffName = staff.DisplayName.."(@"..staff.Name..")",
+			Time = os.time(),
+			DetectionType = detection_type
+		})
+		if (not isfolder('vape/Libraries')) then makefolder('vape/Libraries') end
+		writefile('vape/Libraries/StaffData.json', HTTPService:JSONEncode(json))
+	end
+	function StaffDetector_Functions.Notify(text)
+		game:GetService('StarterGui'):SetCore(
+			'ChatMakeSystemMessage', 
+			{
+				Text = text, 
+				Color = Color3.fromRGB(255, 0, 0), 
+				Font = Enum.Font.GothamBold,
+				FontSize = Enum.FontSize.Size24
+			}
+		)
+	end
+	function StaffDetector_Functions.Trigger(plr, det_type, addInfo)
+		StaffDetector_Functions.SaveStaffData(plr, det_type)
+		local text = plr.DisplayName.."(@"..plr.Name..") has been detected as staff via "..det_type.." detection type! "..StaffDetector_Action.DropdownValue.." action type will be used shortly."
+		if addInfo then text = text.." Additonal Info: "..addInfo end
+		StaffDetector_Functions.Notify(text)
+		StaffDetector_Action.FunctionsTable[StaffDetector_Action.DropdownValue]()
+	end
+	function StaffDetector_Functions.Log_User_Friends(plr)
+		pcall(function()
+			local function iterPageItems(pages)
+				return coroutine.wrap(function()
+					local pagenum = 1
+					while true do
+						for _, item in ipairs(pages:GetCurrentPage()) do
+							coroutine.yield(item, pagenum)
+						end
+						if pages.IsFinished then
+							break
+						end
+						pages:AdvanceToNextPageAsync()
+						pagenum = pagenum + 1
+					end
+				end)
+			end
+			local friendPages = Players:GetFriendsAsync(plr.UserId)
+			for i,v in iterPageItems(friendPages) do
+				StaffDetector_Table.Friends[plr.UserId] = StaffDetector_Table.Friends[plr.UserId] or {}
+				table.insert(StaffDetector_Table.Friends[plr.UserId], i.Username)
+			end
+		end)
+	end
+	function StaffDetector_Functions.isFriend(plr)
+		local target = plr.Name
+		local state, friendOf = false, nil
+		for i,v in pairs(StaffDetector_Table.Friends) do
+			for i2, v2 in pairs(v) do
+				if v2 == target then
+					friendOf = Players:GetNameFromUserIdAsync(i)
+					state = true
+				end
+			end
+		end
+		return state, friendOf
+	end
+	function StaffDetector_Functions.groupCheck(plr)
+		local plrRank = plr:GetRankInGroup(5774246)
+		local state, Type = false, nil
+		local Rank_Table = {
+			[79029254] = "AC MOD",
+			[86172137] = "Lead AC MOD (chase :D)", -- lead ac mod :D luv u chase
+			[43926962] = "Developer",
+			[37929139] = "Developer",
+			[87049509] = "Owner",
+			[37929138] = "Owner"
+		}
+		if StaffDetector_CustomBlacklist.YoutuberToggle.Enabled then
+			Rank_Table[42378457] = "Youtuber/Famous"
+		end
+		if Rank_Table[plrRank] then state = true; Type = Rank_Table[plrRank] end
+		return state, Type
+	end
+	function StaffDetector_Functions.CheckAndTrackPlrTags(plr)
+		local blacklisted_tags = {
+			["Normal"] = {"AC MOD", "LEAD AC MOD", "DEV"},
+			["Clan"] = {}
+		}
+		if StaffDetector_CustomBlacklist.YoutuberToggle.Enabled then
+			table.insert(blacklisted_tags, "FAMOUS")
+		end
+		local blacklisted_clan_tags = {}
+		if StaffDetector_CustomBlacklist.Toggle.Enabled then
+			for i,v in pairs(StaffDetector_CustomBlacklist.TextList.ObjectList) do
+				table.insert(blacklisted_tags, v)
+			end
+		end
+		local function isBlacklisted(tag)
+			for i,v in pairs(blacklisted_tags.Normal) do
+				if v == tag then 
+					return true, "Normal"
+				end
+			end
+			for i,v in pairs(blacklisted_tags.Clan) do
+				if v == tag then 
+					return true, "Clan"
+				end
+			end
+			return false, nil
+		end
+		local function checkTags(tagsFolder)
+			pcall(function()
+				for i,v in pairs(tagsFolder:GetChildren()) do
+					if v.Text then
+						local state, Type = isBlacklisted(v.Text)
+						if state then
+							local add_on = "TagName: "..v.Text
+							if Type == "Clan" then add_on = add_on.." Type: "..Type end
+							StaffDetector_Functions.Trigger(plr, "TAG", add_on)
+						end
+					end
+				end
+			end)
+		end
+		local tags = plr:FindFirstChild("Tags")
+		if tags then
+			checkTags(tags)
+			local con = tags.ChildAdded:Connect(function() checkTags(tags) end)
+			table.insert(StaffDetector_Connections, con)
+		else
+			local con1 = plr.ChildAdded:Connect(function(child)
+				if child.Name == "Tags" and child.ClassName == "Folder" then
+					checkTags(child)
+					local con2 = child.ChildAdded:Connect(function() checkTags(child) end)
+					table.insert(StaffDetector_Connections, con2)
+				end
+			end)
+			table.insert(StaffDetector_Connections, con1)
+		end
+	end
+	local function checkUser(plr)
+		StaffDetector_Functions.Log_User_Friends(plr)
+		pcall(function()
+			StaffDetector_Functions.CheckAndTrackPlrTags(plr)
+		end)
+		task.spawn(function()
+			repeat task.wait() until plr.Character
+			if tostring(plr.Team) == "Spectators" then
+				local state, friendOf = StaffDetector_Functions.isFriend(plr)
+				if (not state) then
+					StaffDetector_Functions.Trigger(plr, "TeamCheck")
+				end
+			else
+				local state, Type = StaffDetector_Functions.groupCheck(plr)
+				if state then
+					StaffDetector_Functions.Trigger(plr, "GroupRoleCheck", "RoleDetected: "..Type)
+				end
+			end
+		end)
+	end
+	StaffDetector = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+		Name = "1[NEW] StaffDetector",
+		Function = function(callback)
+			if callback then
+				for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+					if v ~= game:GetService("Players").LocalPlayer then
+						checkUser(v)
+					end
+				end
+				local con = game:GetService("Players").PlayerAdded:Connect(function(plr)
+					checkUser(plr)
+				end)
+				table.insert(StaffDetector_Connections, con)
+			else
+				for i, v in pairs(StaffDetector_Connections) do
+                    if v.Disconnect then pcall(function() v:Disconnect() end) continue end
+                    if v.disconnect then pcall(function() v:disconnect() end) continue end
+                end
+			end
+		end,
+		HoverText = "Detects staffs"
+	})
+	local list = {}
+	for i,v in pairs(StaffDetector_Action.FunctionsTable) do table.insert(list, i) end
+	StaffDetector_Action.DropdownValue = StaffDetector.CreateDropdown({
+        Name = 'Action',
+        List = list,
+        Function = function() end
+    })
+	StaffDetector_CustomBlacklist.TextList = StaffDetector.CreateTextList({
+		Name = "Blacklisted Clans",
+		TempText = "Clan Tag",
+		AddFunction = function()
+			if StaffDetector.Enabled then 
+				StaffDetector.ToggleButton(false)
+				StaffDetector.ToggleButton(false)
+			end
+		end,
+		RemoveFunction = function()
+			if StaffDetector.Enabled then 
+				StaffDetector.ToggleButton(false)
+				StaffDetector.ToggleButton(false)
+			end
+		end
+	})
+	StaffDetector_CustomBlacklist.TextList.Object.Visible = false
+	StaffDetector_CustomBlacklist.Toggle = StaffDetector.CreateToggle({
+		Name = "CustomBlacklist",
+		Function = function(callback)
+			if callback then
+				StaffDetector_CustomBlacklist.TextList.Object.Visible = true
+			else
+				StaffDetector_CustomBlacklist.TextList.Object.Visible = false
+			end
+		end
+	})
+	StaffDetector_CustomBlacklist.YoutuberToggle = StaffDetector.CreateToggle({
+		Name = "Youtuber/Famous blacklist",
+		Function = function(callback)
+			StaffDetector.ToggleButton(false)
+			StaffDetector.ToggleButton(false)
+		end,
+		Default = true
+	})
+	StaffDetector_ReadStaffData = StaffDetector.CreateToggle({
+		Name = "Read Current Staff Data",
+		Function = function(callback)
+			if callback then
+				pcall(function()
+					StaffDetector_ReadStaffData.ToggleButton(false)
+					local suc, err = pcall(function()
+						return HTTPService:JSONDecode(readfile('vape/Libraries/StaffData.json'))
+					end)
+					local json = {}
+					if suc then json = err end
+					if #json > 0 then
+						for i,v in pairs(json) do
+							local Staff_Name = v.StaffName
+							local Time = v.Time
+							local Detection_Type = v.DetectionType
+							if Staff_Name and Time and Detection_Type then
+								warningNotification("StaffDetector - Log "..tostring(i), "StaffName: "..Staff_Name.." Time_Of_Detection: "..tostring(Time).."\n Detection_Type: "..Detection_Type, 5)
+							end
+						end
+					else
+						warningNotification("StaffDetector", "No staff data was found!", 3)
+					end
+				end)
+			end
+		end
+	})
+end)
+--]]
+
+pcall(function()
+	local StaffDetector = {Enabled = false}
+	run(function()
+		local TPService = game:GetService('TeleportService')
+		local HTTPService = game:GetService("HttpService")
+		local StaffDetector_Connections = {}
+		local StaffDetector_Functions = {}
+		local StaffDetector_Extra = {
+			JoinNotifier = {Enabled = false}
+		}
+		local StaffDetector_Checks = {
+			CustomBlacklist = {
+				"chasemaser",
+				"OrionYeets",
+				"lIllllllllllIllIIlll",
+				"AUW345678",
+				"GhostWxstaken",
+				"throughthewindow009",
+				"YT_GoraPlays",
+				"IllIIIIlllIlllIlIIII",
+				"celisnix",
+				"7SlyR",
+				"DoordashRP",
+				"IlIIIIIlIIIIIIIllI",
+				"lIIlIlIllllllIIlI",
+				"IllIIIIIIlllllIIlIlI",
+				"asapzyzz",
+				"WhyZev",
+				"sworduserpro332",
+				"Muscular_Gorilla",
+				"Typhoon_Kang"
+			}
+		}
+		local StaffDetector_Action = {
+			DropdownValue = {Value = "Uninject"},
+			FunctionsTable = {
+				["Uninject"] = function() GuiLibrary.SelfDestruct() end, 
+				["Panic"] = function() 
+					task.spawn(function() coroutine.close(shared.saveSettingsLoop) end)
+					GuiLibrary.SaveSettings()
+					function GuiLibrary.SaveSettings() return warningNotification("GuiLibrary - SaveSettings", "Saving Settings has been prevented from staff detector!", 1.5) end
+					warningNotification("StaffDetector", "Saving settings has been disabled!", 1.5)
+					task.spawn(function()
+						repeat task.wait() until shared.GuiLibrary.ObjectsThatCanBeSaved.PanicOptionsButton
+						shared.GuiLibrary.ObjectsThatCanBeSaved.PanicOptionsButton.Api.ToggleButton(false)
+					end)
+				end,
+				["Lobby"] = function() TPService:Teleport(6872265039) end
+			},
+		}
+		function StaffDetector_Functions.SaveStaffData(staff, detection_type)
+			local suc, res = pcall(function() return HTTPService:JSONDecode(readfile('vape/Libraries/StaffData.json')) end)
+			local json = suc and res or {}
+			table.insert(json, {StaffName = staff.DisplayName.."(@"..staff.Name..")", Time = os.time(), DetectionType = detection_type})
+			if (not isfolder('vape/Libraries')) then makefolder('vape/Libraries') end
+			writefile('vape/Libraries/StaffData.json', HTTPService:JSONEncode(json))
+		end
+		function StaffDetector_Functions.Notify(text)
+			pcall(function()
+				warningNotification("StaffDetector", tostring(text), 30)
+				game:GetService('StarterGui'):SetCore('ChatMakeSystemMessage', {Text = text, Color = Color3.fromRGB(255, 0, 0), Font = Enum.Font.GothamBold, FontSize = Enum.FontSize.Size24})
+			end)
+		end
+		function StaffDetector_Functions.Trigger(plr, det_type, addInfo)
+			StaffDetector_Functions.SaveStaffData(plr, det_type)
+			local text = plr.DisplayName.."(@"..plr.Name..") has been detected as staff via "..det_type.." detection type! "..StaffDetector_Action.DropdownValue.." action type will be used shortly."
+			if addInfo then text = text.." Additonal Info: "..addInfo end
+			StaffDetector_Functions.Notify(text)
+			StaffDetector_Action.FunctionsTable[StaffDetector_Action.DropdownValue]()
+		end
+		function StaffDetector_Checks:groupCheck(plr)
+			local suc, plrRank = pcall(function() plr:GetRankInGroup(5774246) end)
+			if (not suc) then plrRank = 0 end
+			local state, Type = false, nil
+			local Rank_Table = {[79029254] = "AC MOD", [86172137] = "Lead AC MOD (chase :D)", [43926962] = "Developer", [37929139] = "Developer", [87049509] = "Owner", [37929138] = "Owner"}
+			if StaffDetector_CustomBlacklist.YoutuberToggle.Enabled then Rank_Table[42378457] = "Youtuber/Famous" end
+			if Rank_Table[plrRank] then state = true; Type = Rank_Table[plrRank] end
+			if state then StaffDetector_Functions.Trigger(plr, "Group Check", "Rank: "..tostring(Type)) end
+		end
+		function StaffDetector_Checks:checkCustomBlacklist(plr) if table.find(self.CustomBlacklist, plr.Name) then StaffDetector_Functions.Trigger(plr, "CustomBlacklist") end end
+		function StaffDetector_Checks:checkPermissions(plr)
+			local KnitGotten, KnitClient
+			repeat
+				KnitGotten, KnitClient = pcall(function() return debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 6) end)
+				if KnitGotten then break end
+				task.wait()
+			until KnitGotten
+			repeat task.wait() until debug.getupvalue(KnitClient.Start, 1)
+			local PermissionController = KnitClient.Controllers.PermissionController
+			if KnitClient.Controllers.PermissionController:isStaffMember(plr) then StaffDetector_Functions.Trigger(plr, "PermissionController") end
+		end
+		function StaffDetector_Checks:check(plr)
+			task.spawn(function() pcall(function() self:checkCustomBlacklist(plr) end) end)
+			task.spawn(function() pcall(function() self:checkPermissions(plr) end) end)
+			task.spawn(function() pcall(function() self:groupCheck(plr) end) end)
+		end
+		StaffDetector = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+			Name = "StaffDetector [NEW]",
+			Function = function(call)
+				if call then
+					for i,v in pairs(game:GetService("Players"):GetPlayers()) do if v ~= game:GetService("Players").LocalPlayer then StaffDetector_Checks:check(v) end end
+					local con = game:GetService("Players").PlayerAdded:Connect(function(v)
+						if StaffDetector.Enabled then 
+							StaffDetector_Checks:check(v) 
+							if StaffDetector_Extra.JoinNotifier.Enabled and store.matchState > 0 then warningNotification("StaffDetector", tostring(v.Name).." has joined!", 3) end
+						end
+					end)
+					table.insert(StaffDetector_Connections, con)
+				else for i, v in pairs(StaffDetector_Connections) do if v.Disconnect then pcall(function() v:Disconnect() end) continue end; if v.disconnect then pcall(function() v:disconnect() end) continue end end end
+			end,
+			Default = true
+		})
+		StaffDetector.Restart = function() if StaffDetector.Enabled then StaffDetector.ToggleButton(false); StaffDetector.ToggleButton(false) end end
+		local list = {}
+		for i,v in pairs(StaffDetector_Action.FunctionsTable) do table.insert(list, i) end
+		StaffDetector_Action.DropdownValue = StaffDetector.CreateDropdown({Name = 'Action', List = list, Function = function() end})
+		StaffDetector_Extra.JoinNotifier = StaffDetector.CreateToggle({Name = "Illegal player notifier", Function = StaffDetector.Restart, Default = true})
+	end)
+	
+	--[[task.spawn(function()
+		pcall(function()
+			repeat task.wait() until shared.VapeFullyLoaded
+			if (not StaffDetector.Enabled) then StaffDetector.ToggleButton(false) end
+		end)
+	end)--]]
+end)	
+
+--[[local isEnabled = function() return false end
+local function isEnabled(module)
+	return GuiLibrary.ObjectsThatCanBeSaved[module] and GuiLibrary.ObjectsThatCanBeSaved[module].Api.Enabled and true or false
+end
+local isAlive = function() return false end
+isAlive = function(plr, nohealth) 
+	plr = plr or lplr
+	local alive = false
+	if plr.Character and plr.Character:FindFirstChildWhichIsA('Humanoid') and plr.Character.PrimaryPart and plr.Character:FindFirstChild('Head') then 
+		alive = true
+	end
+	local success, health = pcall(function() return plr.Character:FindFirstChildWhichIsA('Humanoid').Health end)
+	if success and health <= 0 and not nohealth then
+		alive = false
+	end
+	return alive
+end
+local isnetworkowner = function(part)
+	local suc, res = pcall(function() return gethiddenproperty(part, "NetworkOwnershipRule") end)
+	if suc and res == Enum.NetworkOwnership.Manual then
+		sethiddenproperty(part, "NetworkOwnershipRule", Enum.NetworkOwnership.Automatic)
+		networkownerswitch = tick() + 8
+	end
+	return networkownerswitch <= tick()
+end
+run(function() 
+	local runService = game:GetService("RunService")
+	local Invisibility = {}
+	local collideparts = {}
+	local invisvisual = {}
+	local visualrootcolor = {Hue = 0, Sat = 0, Sat = 0}
+	local oldcamoffset = Vector3.zero
+	local oldcolor
+	Invisibility = GuiLibrary.ObjectsThatCanBeSaved.HotWindow.Api.CreateOptionsButton({
+		Name = 'Invisibility',
+		HoverText = 'Makes your invisible.',
+		Function = function(calling)
+			if calling then 
+				task.spawn(function()
+				repeat task.wait() until ((isAlive(lplr, true) or not Invisibility.Enabled) and (isEnabled('Lobby Check', 'Toggle') == false or store.matchState ~= 0))
+				if not Invisibility.Enabled then 
+					return 
+				end
+				task.wait(0.5)
+				local anim = Instance.new('Animation')
+				anim.AnimationId = 'rbxassetid://11360825341'
+				local anim2 = lplr.Character:WaitForChild("Humanoid").Animator:LoadAnimation(anim) 
+				for i,v in next, lplr.Character:GetDescendants() do 
+					if v:IsA('BasePart') and v.CanCollide and v ~= lplr.Character:WaitForChild("HumanoidRootPart") then 
+						v.CanCollide = false 
+						table.insert(collideparts, v) 
+					end 
+				end
+				table.insert(Invisibility.Connections, runService.Stepped:Connect(function()
+					for i,v in next, collideparts do 
+						pcall(function() v.CanCollide = false end)
+					end
+				end))
+				repeat 
+					if isEnabled('AnimationPlayer') then 
+						GuiLibrary.ObjectsThatCanBeSaved.AnimationPlayerOptionsButton.Api.ToggleButton()
+					end
+					if isAlive(lplr, true) and isnetworkowner(lplr.Character:WaitForChild("HumanoidRootPart")) then 
+						lplr.Character:WaitForChild("HumanoidRootPart").Transparency = (invisvisual.Enabled and 0.6 or 1)
+						oldcolor = lplr.Character:WaitForChild("HumanoidRootPart").Color
+						lplr.Character:WaitForChild("HumanoidRootPart").Color = Color3.fromHSV(visualrootcolor.Hue, visualrootcolor.Sat, visualrootcolor.Value)
+						anim2:Play(0.1, 9e9, 0.1) 
+					elseif Invisibility.Enabled then 
+						Invisibility.ToggleButton() 
+						break 
+					end	
+					task.wait()
+				until not Invisibility.Enabled
+			end)
+			else
+				for i,v in next, collideparts do 
+					pcall(function() v.CanCollide = true end) 
+				end
+				table.clear(collideparts)
+				if isAlive(lplr, true) then 
+					lplr.Character:WaitForChild("HumanoidRootPart").Transparency = 1 
+					lplr.Character:WaitForChild("HumanoidRootPart").Color = oldcolor
+					task.wait()
+				    bedwars.SwordController:swingSwordAtMouse() 
+				end
+			end
+		end
+	})
+	invisvisual = Invisibility.CreateToggle({
+		Name = 'Show Root',
+		Function = function(calling)
+			pcall(function() visualrootcolor.Object.Visible = calling end) 
+		end
+	})
+	visualrootcolor = Invisibility.CreateColorSlider({
+		Name = 'Root Color',
+		Function = function() end
+	})
+	visualrootcolor.Object.Visible = false
+end)--]]
+local Customisation = GuiLibrary.ObjectsThatCanBeSaved.CustomisationWindow.Api
 
 run(function()
 	local TexturePacks = {["Enabled"] = false}
@@ -5013,1808 +6834,6 @@ run(function()
 		["List"] = list
 	})
 end)
-
---[[run(function()
-	local MelodyExploit = {Enabled = false}
-	MelodyExploit = GuiLibrary.ObjectsThatCanBeSaved.ExploitsWindow.Api.CreateOptionsButton({
-		Name = "MelodyExploit",
-		Function = function(callback)
-			if callback then
-				warningNotification("MelodyExploit", "Requires a guitar! Recommended lucky blocks or melody kit", 3)
-				RunLoops:BindToHeartbeat("melody",function()			
-					if getItem("guitar") then
-						if lplr.Character:WaitForChild("Humanoid").Health < lplr.Character:WaitForChild("Humanoid").MaxHealth then
-							bedwars.Client:Get(bedwars.GuitarHealRemote):SendToServer({healTarget = lplr})
-							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("StopPlayingGuitar"):FireServer()
-						else
-							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("StopPlayingGuitar"):FireServer()
-						end
-					else
-						local args = {
-							[1] = {
-								["shopItem"] = {
-									["lockAfterPurchase"] = true,
-									["currency"] = "iron",
-									["itemType"] = "guitar",
-									["amount"] = 1,
-									["price"] = 16,
-									["category"] = "Combat",
-									["spawnWithItems"] = {
-										[1] = "guitar"
-									},
-									["requiresKit"] = {
-										[1] = "melody"
-									}
-								},
-								["shopId"] = "2_item_shop_1"
-							}
-						}
-						
-						game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("BedwarsPurchaseItem"):InvokeServer(unpack(args))
-					end
-				end)
-			else
-				RunLoops:UnbindFromHeartbeat("melody")
-			end
-		end
-	})
-
-	local Credits
-	Credits = MelodyExploit.CreateCredits({
-        Name = 'CreditsButtonInstance',
-        Credits = 'Cat V5 (qwertyui)'
-    })
-end)--]]
-
-run(function()
-	local HannahExploit = {Enabled = false}
-	HannahExploit = GuiLibrary.ObjectsThatCanBeSaved.ExploitsWindow.Api.CreateOptionsButton({
-		Name = "HannahExploit",
-		Function = function(callback)
-			if callback then
-				if tostring(store.queueType) == "training_room" or store.equippedKit == "hannah" then
-					RunLoops:BindToHeartbeat("hannah",function()
-						for i,v in pairs(game.Players:GetChildren()) do
-							local args = {
-								[1] = {
-									["user"] = game:GetService("Players").LocalPlayer,
-									["victimEntity"] = v.Character
-								}
-							}
-		
-							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("HannahPromptTrigger"):InvokeServer(unpack(args))
-							task.wait(0.1)
-						end
-					end)
-				else
-					HannahExploit["ToggleButton"](false) 
-					warningNotification("HannahExploit", "Hannah kit required for this to work!", 7)
-				end
-			else
-				RunLoops:UnbindFromHeartbeat("hannah")
-			end
-		end,
-		HovorText = "Sometimes you will teleport across the map with Hannah"
-	})
-	local Credits
-	Credits = HannahExploit.CreateCredits({
-        Name = 'CreditsButtonInstance',
-        Credits = 'CatV5'
-    })
-end)
-
-run(function()
-	local JellyFishExploit = {}
-	JellyFishExploit = GuiLibrary.ObjectsThatCanBeSaved.ExploitsWindow.Api.CreateOptionsButton({
-		Name = 'JellyFishExploit',
-		Function = function(calling)
-			if calling then 
-				task.spawn(function()
-					repeat task.wait()
-						local args = {
-							[1] = "electrify_jellyfish"
-						}
-						game:GetService("ReplicatedStorage"):WaitForChild("events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"):WaitForChild("useAbility"):FireServer(unpack(args))
-					until not JellyFishExploit.Enabled						
-				end)
-			end
-		end
-	})
-end)
-
---[[run(function()
-	local insta = {Enabled = false}
-	insta = GuiLibrary.ObjectsThatCanBeSaved.ExploitsWindow.Api.CreateOptionsButton({
-		Name = "EmberInstakill",
-		Function = function(callback)
-			if callback then
-				warningNotification("EmberInstakill", "Ember blade is required for this to work", 3)
-				task.spawn(function()
-					repeat task.wait() until getItem("infernal_saber")
-					repeat 
-						pcall(function()
-							local args = {
-								[1] = {
-									["chargeTime"] = 1.3664593696594238,
-									["player"] = game:GetService("Players").LocalPlayer,
-									["weapon"] = getItem("infernal_saber")
-								}
-							}
-							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("HellBladeRelease"):FireServer(unpack(args))
-						end)
-						task.wait(0.1)
-					until (not insta.Enabled)
-				end)
-			end
-		end, 
-		HoverText = "🔥ember"
-	})
-end)--]]
-
-task.spawn(function()
-    local tweenmodules = {"BedTP", "EmeraldTP", "DiamondTP", "MiddleTP", "Autowin", "PlayerTP"}
-    local tweening = false
-    repeat
-    for i,v in pairs(tweenmodules) do
-        pcall(function()
-        if GuiLibrary.ObjectsThatCanBeSaved[v.."OptionsButton"].Api.Enabled then
-            tweening = true
-        end
-        end)
-    end
-    VoidwareStore.Tweening = tweening
-    tweening = false
-    task.wait()
-  until not vapeInjected
-end)
-local vapeAssert = function(argument, title, text, duration, hault, moduledisable, module) 
-	if not argument then
-    local suc, res = pcall(function()
-    local notification = GuiLibrary.CreateNotification(title or "Voidware", text or "Failed to call function.", duration or 20, "assets/WarningNotification.png")
-    notification.IconLabel.ImageColor3 = Color3.new(220, 0, 0)
-    notification.Frame.Frame.ImageColor3 = Color3.new(220, 0, 0)
-    if moduledisable and (module and GuiLibrary.ObjectsThatCanBeSaved[module.."OptionsButton"].Api.Enabled) then GuiLibrary.ObjectsThatCanBeSaved[module.."OptionsButton"].Api.ToggleButton(false) end
-    end)
-    if hault then while true do task.wait() end end end
-end
-local function GetMagnitudeOf2Objects(part, part2, bypass)
-	local magnitude, partcount = 0, 0
-	if not bypass then 
-		local suc, res = pcall(function() return part.Position end)
-		partcount = suc and partcount + 1 or partcount
-		suc, res = pcall(function() return part2.Position end)
-		partcount = suc and partcount + 1 or partcount
-	end
-	if partcount > 1 or bypass then 
-		magnitude = bypass and (part - part2).magnitude or (part.Position - part2.Position).magnitude
-	end
-	return magnitude
-end
-local function GetTopBlock(position, smart, raycast, customvector)
-	position = position or isAlive(lplr, true) and lplr.Character:WaitForChild("HumanoidRootPart").Position
-	if not position then 
-		return nil 
-	end
-	if raycast and not game.Workspace:Raycast(position, Vector3.new(0, -2000, 0), store.blockRaycast) then
-	    return nil
-    end
-	local lastblock = nil
-	for i = 1, 500 do 
-		local newray = game.Workspace:Raycast(lastblock and lastblock.Position or position, customvector or Vector3.new(0.55, 999999, 0.55), store.blockRaycast)
-		local smartest = newray and smart and game.Workspace:Raycast(lastblock and lastblock.Position or position, Vector3.new(0, 5.5, 0), store.blockRaycast) or not smart
-		if newray and smartest then
-			lastblock = newray
-		else
-			break
-		end
-	end
-	return lastblock
-end
-local function FindEnemyBed(maxdistance, highest)
-	local target = nil
-	local distance = maxdistance or math.huge
-	local whitelistuserteams = {}
-	local badbeds = {}
-	if not lplr:GetAttribute("Team") then return nil end
-	for i,v in pairs(playersService:GetPlayers()) do
-		if v ~= lplr then
-			local type, attackable = shared.vapewhitelist:get(v)
-			if not attackable then
-				whitelistuserteams[v:GetAttribute("Team")] = true
-			end
-		end
-	end
-	for i,v in pairs(collectionService:GetTagged("bed")) do
-			local bedteamstring = string.split(v:GetAttribute("id"), "_")[1]
-			if whitelistuserteams[bedteamstring] ~= nil then
-			   badbeds[v] = true
-		    end
-	    end
-	for i,v in pairs(collectionService:GetTagged("bed")) do
-		if v:GetAttribute("id") and v:GetAttribute("id") ~= lplr:GetAttribute("Team").."_bed" and badbeds[v] == nil and lplr.Character and lplr.Character.PrimaryPart then
-			if v:GetAttribute("NoBreak") or v:GetAttribute("PlacedByUserId") and v:GetAttribute("PlacedByUserId") ~= 0 then continue end
-			local magdist = GetMagnitudeOf2Objects(lplr.Character.PrimaryPart, v)
-			if magdist < distance then
-				target = v
-				distance = magdist
-			end
-		end
-	end
-	local coveredblock = highest and target and GetTopBlock(target.Position, true)
-	if coveredblock then
-		target = coveredblock.Instance
-	end
-	return target
-end
-local function FindTeamBed()
-	local bedstate, res = pcall(function()
-		return lplr.leaderstats.Bed.Value
-	end)
-	return bedstate and res and res ~= nil and res == "✅"
-end
-local function FindItemDrop(item)
-	local itemdist = nil
-	local dist = math.huge
-	local function abletocalculate() return lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") end
-    for i,v in pairs(collectionService:GetTagged("ItemDrop")) do
-		if v and v.Name == item and abletocalculate() then
-			local itemdistance = GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v)
-			if itemdistance < dist then
-			itemdist = v
-			dist = itemdistance
-		end
-		end
-	end
-	return itemdist
-end
-local function FindTarget(dist, blockRaycast, includemobs, healthmethod)
-	local whitelist = shared.vapewhitelist
-	local sort, entity = healthmethod and math.huge or dist or math.huge, {}
-	local function abletocalculate() return lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") end
-	local sortmethods = {Normal = function(entityroot, entityhealth) return abletocalculate() and GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), entityroot) < sort end, Health = function(entityroot, entityhealth) return abletocalculate() and entityhealth < sort end}
-	local sortmethod = healthmethod and "Health" or "Normal"
-	local function raycasted(entityroot) return abletocalculate() and blockRaycast and game.Workspace:Raycast(entityroot.Position, Vector3.new(0, -2000, 0), store.blockRaycast) or not blockRaycast and true or false end
-	for i,v in pairs(playersService:GetPlayers()) do
-		if v ~= lplr and abletocalculate() and isAlive(v) and v.Team ~= lplr.Team then
-			if not ({whitelist:get(v)})[2] then 
-				continue
-			end
-			if sortmethods[sortmethod](v.Character.HumanoidRootPart, v.Character:GetAttribute("Health") or v.Character.Humanoid.Health) and raycasted(v.Character.HumanoidRootPart) then
-				sort = healthmethod and v.Character.Humanoid.Health or GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.Character.HumanoidRootPart)
-				entity.Player = v
-				entity.Human = true 
-				entity.RootPart = v.Character.HumanoidRootPart
-				entity.Humanoid = v.Character.Humanoid
-			end
-		end
-	end
-	if includemobs then
-		local maxdistance = dist or math.huge
-		for i,v in pairs(store.pots) do
-			if abletocalculate() and v.PrimaryPart and GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.PrimaryPart) < maxdistance then
-			entity.Player = {Character = v, Name = "PotEntity", DisplayName = "PotEntity", UserId = 1}
-			entity.Human = false
-			entity.RootPart = v.PrimaryPart
-			entity.Humanoid = {Health = 1, MaxHealth = 1}
-			end
-		end
-		for i,v in pairs(collectionService:GetTagged("DiamondGuardian")) do 
-			if v.PrimaryPart and v:FindFirstChild("Humanoid") and v.Humanoid.Health and abletocalculate() then
-				if sortmethods[sortmethod](v.PrimaryPart, v.Humanoid.Health) and raycasted(v.PrimaryPart) then
-				sort = healthmethod and v.Humanoid.Health or GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.PrimaryPart)
-				entity.Player = {Character = v, Name = "DiamondGuardian", DisplayName = "DiamondGuardian", UserId = 1}
-				entity.Human = false
-				entity.RootPart = v.PrimaryPart
-				entity.Humanoid = v.Humanoid
-				end
-			end
-		end
-		for i,v in pairs(collectionService:GetTagged("GolemBoss")) do
-			if v.PrimaryPart and v:FindFirstChild("Humanoid") and v.Humanoid.Health and abletocalculate() then
-				if sortmethods[sortmethod](v.PrimaryPart, v.Humanoid.Health) and raycasted(v.PrimaryPart) then
-				sort = healthmethod and v.Humanoid.Health or GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.PrimaryPart)
-				entity.Player = {Character = v, Name = "Titan", DisplayName = "Titan", UserId = 1}
-				entity.Human = false
-				entity.RootPart = v.PrimaryPart
-				entity.Humanoid = v.Humanoid
-				end
-			end
-		end
-		for i,v in pairs(collectionService:GetTagged("Drone")) do
-			local plr = playersService:GetPlayerByUserId(v:GetAttribute("PlayerUserId"))
-			if plr and plr ~= lplr and plr.Team and lplr.Team and plr.Team ~= lplr.Team and ({VoidwareFunctions:GetPlayerType(plr)})[2] and abletocalculate() and v.PrimaryPart and v:FindFirstChild("Humanoid") and v.Humanoid.Health then
-				if sortmethods[sortmethod](v.PrimaryPart, v.Humanoid.Health) and raycasted(v.PrimaryPart) then
-					sort = healthmethod and v.Humanoid.Health or GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.PrimaryPart)
-					entity.Player = {Character = v, Name = "Drone", DisplayName = "Drone", UserId = 1}
-					entity.Human = false
-					entity.RootPart = v.PrimaryPart
-					entity.Humanoid = v.Humanoid
-				end
-			end
-		end
-		for i,v in pairs(collectionService:GetTagged("Monster")) do
-			if v:GetAttribute("Team") ~= lplr:GetAttribute("Team") and abletocalculate() and v.PrimaryPart and v:FindFirstChild("Humanoid") and v.Humanoid.Health then
-				if sortmethods[sortmethod](v.PrimaryPart, v.Humanoid.Health) and raycasted(v.PrimaryPart) then
-				sort = healthmethod and v.Humanoid.Health or GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), v.PrimaryPart)
-				entity.Player = {Character = v, Name = "Monster", DisplayName = "Monster", UserId = 1}
-				entity.Human = false
-				entity.RootPart = v.PrimaryPart
-				entity.Humanoid = v.Humanoid
-			end
-		end
-	end
-    end
-    return entity
-end
-local function isVulnerable(plr) return plr.Humanoid.Health > 0 and not plr.Character.FindFirstChildWhichIsA(plr.Character, "ForceField") end
-VoidwareFunctions.GlobaliseObject("isVulnarable", isVulnarable)
-local function EntityNearPosition(distance, ignore, overridepos)
-	local closestEntity, closestMagnitude = nil, distance
-	if entityLibrary.isAlive then
-		for i, v in pairs(entityLibrary.entityList) do
-			if not v.Targetable then continue end
-			if isVulnerable(v) then
-				local mag = (entityLibrary.character.HumanoidRootPart.Position - v.RootPart.Position).magnitude
-				if overridepos and mag > distance then
-					mag = (overridepos - v.RootPart.Position).magnitude
-				end
-				if mag <= closestMagnitude then
-					closestEntity, closestMagnitude = v, mag
-				end
-			end
-		end
-		if not ignore then
-			for i, v in pairs(game.Workspace:GetChildren()) do
-				if v.Name == "Void Enemy Dummy" or v.Name == "Emerald Enemy Dummy" or v.Name == "Diamond Enemy Dummy" or v.Name == "Leather Enemy Dummy" or v.Name == "Regular Enemy Dummy" or v.Name == "Iron Enemy Dummy" then
-					if v.PrimaryPart then
-						local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
-						if overridepos and mag > distance then
-							mag = (overridepos - v2.PrimaryPart.Position).magnitude
-						end
-						if mag <= closestMagnitude then
-							closestEntity, closestMagnitude = {Player = {Name = v.Name, UserId = (v.Name == "Duck" and 2020831224 or 1443379645)}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
-						end
-					end
-				end
-			end
-			for i, v in pairs(collectionService:GetTagged("Monster")) do
-				if v.PrimaryPart and v:GetAttribute("Team") ~= lplr:GetAttribute("Team") then
-					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
-					if overridepos and mag > distance then
-						mag = (overridepos - v2.PrimaryPart.Position).magnitude
-					end
-					if mag <= closestMagnitude then
-						closestEntity, closestMagnitude = {Player = {Name = v.Name, UserId = (v.Name == "Duck" and 2020831224 or 1443379645)}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
-					end
-				end
-			end
-			for i, v in pairs(collectionService:GetTagged("GuardianOfDream")) do
-				if v.PrimaryPart and v:GetAttribute("Team") ~= lplr:GetAttribute("Team") then
-					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
-					if overridepos and mag > distance then
-						mag = (overridepos - v2.PrimaryPart.Position).magnitude
-					end
-					if mag <= closestMagnitude then
-						closestEntity, closestMagnitude = {Player = {Name = v.Name, UserId = (v.Name == "Duck" and 2020831224 or 1443379645)}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
-					end
-				end
-			end
-			for i, v in pairs(collectionService:GetTagged("DiamondGuardian")) do
-				if v.PrimaryPart then
-					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
-					if overridepos and mag > distance then
-						mag = (overridepos - v2.PrimaryPart.Position).magnitude
-					end
-					if mag <= closestMagnitude then
-						closestEntity, closestMagnitude = {Player = {Name = "DiamondGuardian", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
-					end
-				end
-			end
-			for i, v in pairs(collectionService:GetTagged("GolemBoss")) do
-				if v.PrimaryPart then
-					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
-					if overridepos and mag > distance then
-						mag = (overridepos - v2.PrimaryPart.Position).magnitude
-					end
-					if mag <= closestMagnitude then
-						closestEntity, closestMagnitude = {Player = {Name = "GolemBoss", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
-					end
-				end
-			end
-			for i, v in pairs(collectionService:GetTagged("Drone")) do
-				if v.PrimaryPart and tonumber(v:GetAttribute("PlayerUserId")) ~= lplr.UserId then
-					local droneplr = playersService:GetPlayerByUserId(v:GetAttribute("PlayerUserId"))
-					if droneplr and droneplr.Team == lplr.Team then continue end
-					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
-					if overridepos and mag > distance then
-						mag = (overridepos - v.PrimaryPart.Position).magnitude
-					end
-					if mag <= closestMagnitude then -- magcheck
-						closestEntity, closestMagnitude = {Player = {Name = "Drone", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
-					end
-				end
-			end
-			for i,v in pairs(game.Workspace:GetChildren()) do
-				if v.Name == "InfectedCrateEntity" and v.ClassName == "Model" and v.PrimaryPart then
-					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
-					if overridepos and mag > distance then
-						mag = (overridepos - v.PrimaryPart.Position).magnitude
-					end
-					if mag <= closestMagnitude then -- magcheck
-						closestEntity, closestMagnitude = {Player = {Name = "InfectedCrateEntity", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
-					end
-				end
-			end
-			for i, v in pairs(store.pots) do
-				if v.PrimaryPart then
-					local mag = (entityLibrary.character.HumanoidRootPart.Position - v.PrimaryPart.Position).magnitude
-					if overridepos and mag > distance then
-						mag = (overridepos - v.PrimaryPart.Position).magnitude
-					end
-					if mag <= closestMagnitude then -- magcheck
-						closestEntity, closestMagnitude = {Player = {Name = "Pot", UserId = 1443379645}, Character = v, RootPart = v.PrimaryPart, JumpTick = tick() + 5, Jumping = false, Humanoid = {HipHeight = 2}}, mag
-					end
-				end
-			end
-		end
-	end
-	return closestEntity
-end
-VoidwareFunctions.GlobaliseObject("EntityNearPosition", EntityNearPosition)
---[[run(function()
-	local Autowin = {Enabled = false}
-	local AutowinNotification = {Enabled = true}
-	local bedtween
-	local playertween
-	Autowin = GuiLibrary.ObjectsThatCanBeSaved.HotWindow.Api.CreateOptionsButton({
-		Name = "Autowin",
-		ExtraText = function() return shared.GlobalStore and shared.GlobalStore.queueType:find("5v5") and "BedShield" or "Normal" end,
-		Function = function(callback)
-			if callback then
-				task.spawn(function()
-					repeat task.wait() until GuiLibrary.ObjectsThatCanBeSaved.InvisibilityOptionsButton
-					repeat task.wait() until GuiLibrary.ObjectsThatCanBeSaved.GamingChairOptionsButton
-					if GuiLibrary.ObjectsThatCanBeSaved.InvisibilityOptionsButton.Api.Enabled and GuiLibrary.ObjectsThatCanBeSaved.GamingChairOptionsButton.Api.Enabled then
-						errorNotification("Autowin", "Please turn off the Invisibility and GamingChair module!", 3)
-						Autowin.ToggleButton()
-						return
-					end
-					if GuiLibrary.ObjectsThatCanBeSaved.InvisibilityOptionsButton.Api.Enabled then
-						errorNotification("Autowin", "Please turn off the Invisibility module!", 3)
-						Autowin.ToggleButton()
-						return
-					end
-					if GuiLibrary.ObjectsThatCanBeSaved.GamingChairOptionsButton.Api.Enabled then
-						errorNotification("Autowin", "Please turn off the GamingChair module!", 3)
-						Autowin.ToggleButton()
-						return
-					end
-					task.spawn(function()
-						if store.matchState == 0 then repeat task.wait() until store.matchState ~= 0 or not Autowin.Enabled end
-						if not shared.VapeFullyLoaded then repeat task.wait() until shared.VapeFullyLoaded or not Autowin.Enabled end
-						if not Autowin.Enabled then return end
-						vapeAssert(not store.queueType:find("skywars"), "Autowin", "Skywars not supported.", 7, true, true, "Autowin")
-						if isAlive(lplr, true) then
-							lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-							lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-						end
-						table.insert(Autowin.Connections, runService.Heartbeat:Connect(function()
-							pcall(function()
-								if not isnetworkowner(lplr.Character:WaitForChild("HumanoidRootPart")) and (FindEnemyBed() and GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), FindEnemyBed()) > 75 or not FindEnemyBed()) then
-									if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled and store.matchState < 2 then
-										lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-										lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-									end
-								end
-							end)
-						end))
-						table.insert(Autowin.Connections, lplr.CharacterAdded:Connect(function()
-							if not isAlive(lplr, true) then repeat task.wait() until isAlive(lplr, true) end
-							local bed = FindEnemyBed()
-							if bed and (bed:GetAttribute("BedShieldEndTime") and bed:GetAttribute("BedShieldEndTime") < game.Workspace:GetServerTimeNow() or not bed:GetAttribute("BedShieldEndTime")) then
-								bedtween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0), {CFrame = CFrame.new(bed.Position) + Vector3.new(0, 10, 0)})
-								task.wait(0.1)
-								bedtween:Play()
-								bedtween.Completed:Wait()
-								task.spawn(function()
-									task.wait(1.5)
-									if lplr.Character:FindFirstChild("HumanoidRootPart") then
-										local magnitude = GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), bed)
-										if magnitude >= 50 and FindTeamBed() and Autowin.Enabled then
-											lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-											lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-										end
-									end
-								end)
-								if AutowinNotification.Enabled then
-									local function get_bed_team(id)
-										local teamName = "Unknown"
-										for i,v in pairs(game:GetService("Players"):GetPlayers()) do
-											if v ~= game:GetService("Players").LocalPlayer then
-												if v:GetAttribute("Team") and tostring(v:GetAttribute("Team")) == tostring(id) then
-													teamName = tostring(v.Team)
-												end
-											end
-										end
-										return false, teamName
-									end
-									local suc, bedname = get_bed_team(bed:GetAttribute("TeamId"))
-									task.spawn(InfoNotification, "Autowin", "Destroying "..bedname:lower().." team's bed", 5)
-								end
-								repeat task.wait() until FindEnemyBed() ~= bed or not isAlive()
-								if EntityNearPosition(45) and EntityNearPosition(45).RootPart and isAlive() then
-									if AutowinNotification.Enabled then
-										local team = VoidwareStore.bedtable[bed] or "unknown"
-										task.spawn(InfoNotification, "Autowin", "Killing "..team:lower().." team's teamates", 5)
-									end
-									repeat
-										local target = EntityNearPosition(45)
-										if not target.RootPart then break end
-										playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
-										playertween:Play()
-										task.wait()
-									until not (EntityNearPosition(45) and EntityNearPosition(45).RootPart) or not Autowin.Enabled or not isAlive()
-								end
-								if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled then
-									lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-									lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-								end
-							elseif EntityNearPosition(45) and EntityNearPosition(45).RootPart then
-								local target = EntityNearPosition(45)
-								playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75, Enum.EasingStyle.Linear), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
-								playertween:Play()
-								if AutowinNotification.Enabled then
-									task.spawn(InfoNotification, "Autowin", "Killing "..target.Player.DisplayName.." ("..(target.Player.Team and target.Player.Team.Name or "neutral").." Team)", 5)
-								end
-								playertween.Completed:Wait()
-								if not Autowin.Enabled then return end
-								if EntityNearPosition(50) and EntityNearPosition(50).RootPart and isAlive() then
-									repeat
-										target = EntityNearPosition(50)
-										if not target.RootPart or not isAlive() then break end
-										playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
-										playertween:Play()
-										task.wait()
-									until not (EntityNearPosition(45) and EntityNearPosition(45).RootPart) or not Autowin.Enabled or not isAlive()
-								end
-								if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled then
-									lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-									lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-								end
-							elseif GetTarget(nil, false, true) and GetTarget(nil, false, true).RootPart then
-								local target = GetTarget(nil, false, true)
-								playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75, Enum.EasingStyle.Linear), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
-								playertween:Play()
-								if AutowinNotification.Enabled then task.spawn(InfoNotification, "Autowin", "Killing "..target.Player.DisplayName.." ("..(target.Player.Team and target.Player.Team.Name or "neutral").." Team)", 5) end
-								playertween.Completed:Wait()
-								if not Autowin.Enabled then return end
-								if EntityNearPosition(50) and EntityNearPosition(50).RootPart and isAlive() then
-									repeat
-										target = EntityNearPosition(50)
-										if not target.RootPart or not isAlive() then break end
-										playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.75), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
-										playertween:Play()
-										task.wait()
-									until not (EntityNearPosition(45) and EntityNearPosition(45).RootPart) or not Autowin.Enabled or not isAlive()
-								end
-								if isAlive(lplr, true) and GetTarget(nil, false, true) and GetTarget(nil, false, true).RootPart and Autowin.Enabled then
-									lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-									lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-								end
-							else
-								if shared.GlobalStore.matchState == 2 then return end
-								InfoNotification("Autowin", "No targets found! Retrying...", 1)
-								lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-								lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-							end
-						end))
-						table.insert(Autowin.Connections, lplr.CharacterAdded:Connect(function()
-							if not isAlive(lplr, true) then repeat task.wait() until isAlive(lplr, true) end
-							if not store.matchState == 2 then return end
-							local oldpos = lplr.Character:WaitForChild("HumanoidRootPart").CFrame
-							repeat 
-							lplr.Character:WaitForChild("HumanoidRootPart").CFrame = oldpos
-							task.wait()
-							until not isAlive(lplr, true) or not Autowin.Enabled
-						end))
-					end)
-				end)
-			else
-				pcall(function() playertween:Cancel() end)
-				pcall(function() bedtween:Cancel() end)
-			end
-		end,
-		HoverText = "best paid autowin 2023!1!!! rel11!11!1"
-	})
-end)--]]
-
-run(function()
-	local Autowin = {Enabled = false}
-	local AutowinNotification = {Enabled = true}
-	local bedtween
-	local playertween
-	Autowin = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-		Name = "Autowin",
-		ExtraText = function() return store.queueType:find("5v5") and "BedShield" or "Normal" end,
-		Function = function(callback)
-			if callback then
-				task.spawn(function()
-					if store.matchState == 0 then repeat task.wait() until store.matchState ~= 0 or not Autowin.Enabled end
-					if not shared.VapeFullyLoaded then repeat task.wait() until shared.VapeFullyLoaded or not Autowin.Enabled end
-					if not Autowin.Enabled then return end
-					vapeAssert(not store.queueType:find("skywars"), "Autowin", "Skywars not supported.", 7, true, true, "Autowin")
-					if isAlive(lplr, true) then
-						lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-						lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-					end
-					table.insert(Autowin.Connections, runService.Heartbeat:Connect(function()
-						pcall(function()
-							if not isnetworkowner(lplr.Character:WaitForChild("HumanoidRootPart")) and (FindEnemyBed() and GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), FindEnemyBed()) > 75 or not FindEnemyBed()) then
-								if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled and (not store.matchState == 2) then
-									lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-									lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-								end
-							end
-						end)
-					end))
-					table.insert(Autowin.Connections, lplr.CharacterAdded:Connect(function()
-						if not isAlive(lplr, true) then repeat task.wait() until isAlive(lplr, true) end
-						local bed = FindEnemyBed()
-						if bed and (bed:GetAttribute("BedShieldEndTime") and bed:GetAttribute("BedShieldEndTime") < workspace:GetServerTimeNow() or not bed:GetAttribute("BedShieldEndTime")) then
-						bedtween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.65, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0), {CFrame = CFrame.new(bed.Position) + Vector3.new(0, 10, 0)})
-						task.wait(0.1)
-						bedtween:Play()
-						bedtween.Completed:Wait()
-						task.spawn(function()
-						task.wait(1.5)
-						local magnitude = GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), bed)
-						if magnitude >= 50 and FindTeamBed() and Autowin.Enabled then
-							lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-							lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-						end
-						end)
-						if AutowinNotification.Enabled then
-							local bedname = VoidwareStore.bedtable[bed] or "unknown"
-							task.spawn(InfoNotification, "Autowin", "Destroying "..bedname:lower().." team's bed", 5)
-						end
-						if not isEnabled("Nuker") then
-							GuiLibrary.ObjectsThatCanBeSaved.NukerOptionsButton.Api.ToggleButton(false)
-						end
-						repeat task.wait() until FindEnemyBed() ~= bed or not isAlive()
-						if FindTarget(45, store.blockRaycast) and FindTarget(45, store.blockRaycast).RootPart and isAlive() then
-							if AutowinNotification.Enabled then
-								local team = VoidwareStore.bedtable[bed] or "unknown"
-								task.spawn(InfoNotification, "Autowin", "Killing "..team:lower().." team's teamates", 5)
-							end
-							repeat
-							local target = FindTarget(45, store.blockRaycast)
-							if not target.RootPart then break end
-							playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.30), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
-							playertween:Play()
-							task.wait()
-							until not (FindTarget(45, store.blockRaycast) and FindTarget(45, store.blockRaycast).RootPart) or not Autowin.Enabled or not isAlive()
-						end
-						if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled then
-							lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-							lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-						end
-						elseif FindTarget(nil, store.blockRaycast) and FindTarget(nil, store.blockRaycast).RootPart then
-							task.wait()
-							local target = FindTarget(nil, store.blockRaycast)
-							playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(GetMagnitudeOf2Objects(lplr.Character:WaitForChild("HumanoidRootPart"), target.RootPart) / 23.4 / 35, Enum.EasingStyle.Linear), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
-							playertween:Play()
-							if AutowinNotification.Enabled then
-								task.spawn(InfoNotification, "Autowin", "Killing "..target.Player.DisplayName.." ("..(target.Player.Team and target.Player.Team.Name or "neutral").." Team)", 5)
-							end
-							playertween.Completed:Wait()
-							if not Autowin.Enabled then return end
-								if FindTarget(50, store.blockRaycast).RootPart and isAlive() then
-									repeat
-									target = FindTarget(50, store.blockRaycast)
-									if not target.RootPart or not isAlive() then break end
-									playertween = tweenService:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(0.30), {CFrame = target.RootPart.CFrame + Vector3.new(0, 3, 0)})
-									playertween:Play()
-									task.wait()
-									until not (FindTarget(50, store.blockRaycast) and FindTarget(50, store.blockRaycast).RootPart) or (not Autowin.Enabled) or (not isAlive())
-								end
-							if isAlive(lplr, true) and FindTeamBed() and Autowin.Enabled then
-								lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-								lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-							end
-						else
-						if store.matchState == 2 then return end
-						lplr.Character:WaitForChild("Humanoid"):TakeDamage(lplr.Character:WaitForChild("Humanoid").Health)
-						lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Dead)
-						end
-					end))
-					table.insert(Autowin.Connections, lplr.CharacterAdded:Connect(function()
-						if (not isAlive(lplr, true)) then repeat task.wait() until isAlive(lplr, true) end
-						if (not store.matchState == 2) then return end
-						local oldpos = lplr.Character:WaitForChild("HumanoidRootPart").CFrame
-						repeat 
-						lplr.Character:WaitForChild("HumanoidRootPart").CFrame = oldpos
-						task.wait()
-						until (not isAlive(lplr, true)) or (not Autowin.Enabled)
-					end))
-				end)
-			else
-				pcall(function() playertween:Cancel() end)
-				pcall(function() bedtween:Cancel() end)
-			end
-		end,
-		HoverText = "best paid autowin 2023!1!!! rel11!11!1"
-	})
-end)
-
---[[run(function()
-	local function getItemNear(itemName, inv)
-        for slot, item in pairs(inv or store.localInventory.inventory.items) do
-            if item.itemType == itemName or item.itemType:find(itemName) then
-                return item, slot
-            end
-        end
-        return nil
-    end
-	local Disabler = {Enabled = false}
-	local ZephyrSpeed = {Value = 1}
-	local DisablerMode = {Value = "Scythe"}
-	local mode = "Scythe"
-	local sd = false
-	local csd = false
-	local zd = false
-	local fd = false
-	local function DeleteClientSidedAnticheat()
-		if lplr.PlayerScripts.Modules:FindFirstChild("anticheat") then
-			lplr.PlayerScripts.Modules.anticheat:Destroy()
-		end
-		if lplr.PlayerScripts:FindFirstChild("GameAnalyticsClient") then
-			lplr.PlayerScripts.GameAnalyticsClient:Destroy()
-		end
-		if game:GetService("ReplicatedStorage").Modules:FindFirstChild("anticheat") then
-			game:GetService("ReplicatedStorage").Modules:FindFirstChild("anticheat"):Destroy()
-		end
-	end
-	Disabler = GuiLibrary.ObjectsThatCanBeSaved.VoidwareWindow.Api.CreateOptionsButton({
-		Name = "Disabler",
-		Function = function(callback)
-			if callback then
-				task.spawn(function()
-					repeat
-						task.wait()
-						if zd then
-							shared.disablerZephyr = true
-						else
-							shared.disablerZephyr = false
-						end
-						if fd then
-							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("TridentUnanchor"):InvokeServer()
-							game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("TridentAnchor"):InvokeServer()
-						end
-						if sd then
-							local item = getItemNear("scythe")
-							if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then 
-								bedwars.Client:Get("ScytheDash"):SendToServer({direction = lplr.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector*9e9})
-								if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-									shared.GlobalStore.scythe = tick() + 1
-								end
-							end
-						end
-					until (not Disabler.Enabled)
-				end)
-				if csd then
-					DeleteClientSidedAnticheat()
-					warningNotification("Cat", "Disabled Client", 3)
-				end
-			else
-				shared.disablerZephyr = false
-			end
-		end,
-		HoverText = "Attempts to help bypass the AntiCheat",
-		ExtraText = function()
-			return "Heatseeker"
-		end
-	})
-	ClientS = Disabler.CreateToggle({
-		Name = "Client Sided",
-		Default = true,
-		Function = function(callback)
-			csd = callback
-			Disabler.ToggleButton(false)
-			Disabler.ToggleButton(false)
-		end
-	})
-	Scythe = Disabler.CreateToggle({
-		Name = "Scythe",
-		Default = true,
-		Function = function(callback)
-			sd = callback
-			Disabler.ToggleButton(false)
-			Disabler.ToggleButton(false)
-		end
-	})
-	Zephyr = Disabler.CreateToggle({
-		Name = "Zephyr",
-		Default = true,
-		Function = function(callback)
-			zd = callback
-			Disabler.ToggleButton(false)
-			Disabler.ToggleButton(false)
-		end
-	})
-	--[[Float = Disabler.CreateToggle({
-		Name = "Float (EXPERIMENTAL)",
-		Default = true,
-		Function = function(callback)
-			fd = callback
-			Disabler.ToggleButton(false)
-			Disabler.ToggleButton(false)
-		end
-	})]]--
-	--[[ZephyrSpeed = Disabler.CreateSlider({
-		Name = "Speed Multiplier",
-		Min = 0,
-		Max = 2,
-		Function = function(callback)
-			shared.disablerBoost = callback
-			Disabler.ToggleButton(false)
-			Disabler.ToggleButton(false)
-		end,
-		Default = 1
-	})
-end)--]]
-
-run(function()
-	local GetHost = {Enabled = false}
-	GetHost = GuiLibrary.ObjectsThatCanBeSaved.VoidwareWindow.Api.CreateOptionsButton({
-		Name = "GetHost",
-		HoverText = ":troll:",
-		Function = function(callback) 
-			if callback then
-				task.spawn(function()
-					warningNotification("GetHost", "This module is only for show. None of the settings will work.", 5)
-					game.Players.LocalPlayer:SetAttribute("CustomMatchRole", "host")
-				end)
-			end
-		end
-	})
-end)
-
-run(function()
-	local lplr = game:GetService("Players").LocalPlayer
-	local lplr_gui = lplr.PlayerGui
-
-	local function handle_tablist(ui)
-		local frame = ui:FindFirstChild("TabListFrame")
-		if frame then
-			local plrs_frame = frame:FindFirstChild("4"):FindFirstChild("1")
-			if plrs_frame then
-				local side_1 = plrs_frame:WaitForChild("2")
-				local side_2 = plrs_frame:WaitForChild("3")
-				local sides = {side_1, side_2}
-
-				for _, side in pairs(sides) do
-					if side then
-						--print("Processing side:", side.Name)
-						local side_teams = {}
-						local side_teams_players = {}
-
-						for _, child in pairs(side:GetChildren()) do
-							if child:IsA("Frame") then
-								table.insert(side_teams, child)
-							end
-						end
-
-						for _, team in pairs(side_teams) do
-							local team_plrs_list = team:WaitForChild("3")
-							local plrs = team_plrs_list:GetChildren()
-
-							for _, plr in pairs(plrs) do
-								if plr:IsA("Frame") and plr.Name == "PlayerRowContainer" then
-									table.insert(side_teams_players, plr)
-								end
-							end
-						end
-
-						for _, player_row in pairs(side_teams_players) do
-							local plr_name_frame = player_row:WaitForChild("Content"):WaitForChild("PlayerRow"):WaitForChild("3"):WaitForChild("PlayerNameContainer"):WaitForChild("3"):WaitForChild("2"):FindFirstChild("PlayerName")
-
-							if plr_name_frame then
-								local function extract_name(formatted_text)
-									local name = formatted_text:match("</font>%s*(.+)")
-									return name
-								end
-
-								local current_text = plr_name_frame.Text
-								local name = extract_name(current_text)
-								local streamer_mode = true
-
-								for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-									if player.DisplayName == name then
-										streamer_mode = false
-										break
-									end
-								end
-
-								if not streamer_mode then
-									local needed_plr
-									for i,v in pairs(game:GetService("Players"):GetPlayers()) do
-										if game:GetService("Players"):GetPlayers()[i].DisplayName == name then
-											needed_plr = game:GetService("Players"):GetPlayers()[i]
-										end
-									end
-									if needed_plr then
-										local function get_player_rank(player)
-											local rank = shared.vapewhitelist:get(player)
-											if rank == 1 then
-												return "INF"
-											elseif rank == 2 then
-												return "Owner"
-											else
-												return "Normal"
-											end
-										end
-										local rank = get_player_rank(needed_plr)
-										local function add_colored_text(existing_text, new_text, color3)
-											local r = math.floor(color3.R * 255)
-											local g = math.floor(color3.G * 255)
-											local b = math.floor(color3.B * 255)
-											local new_colored_text = string.format('<font color="rgb(%d,%d,%d)">[%s]</font> ', r, g, b, new_text)
-											local updated_text = new_colored_text .. existing_text
-											return updated_text
-										end
-
-										local tag_data = shared.vapewhitelist:tag(needed_plr)
-										if tag_data and #tag_data > 0 then
-											if tag_data[1]["text"] == "VOIDWARE USER" then rank = "Normal" end
-											local tag_text = tag_data[1]["text"].." - "..rank
-											local tag_color = tag_data[1]["color"]
-											local updated_text = add_colored_text(current_text, tag_text, tag_color)
-											
-											if updated_text then
-												plr_name_frame.Text = updated_text
-											end
-										else
-											print("Tag data missing for player:", name)
-										end
-									end
-								else
-									print("Streamer mode is on for player:", name)
-								end
-							else
-								print("PlayerName frame not found for player row")
-							end
-						end
-					else
-						print("Side is nil")
-					end
-				end
-			else
-				print("Players frame not found")
-			end
-		else
-			print("TabListFrame not found")
-		end
-	end
-
-	local function handle_new_ui(ui)
-		if tostring(ui) == "TabListScreenGui" then
-			handle_tablist(ui)
-		end
-	end
-
-	lplr_gui.ChildAdded:Connect(handle_new_ui)
-end)
-
-run(function()
-	local HackerDetector = {}
-	local HackerDetectorInfFly = {}
-	local HackerDetectorTeleport = {}
-	local HackerDetectorNuker = {}
-	local HackerDetectorFunny = {}
-	local HackerDetectorInvis = {}
-	local HackerDetectorName = {}
-	local HackerDetectorSpeed = {}
-	local HackerDetectorFileCache = {}
-	local pastesploit
-	local detectedusers = {
-		InfiniteFly = {},
-		Teleport = {},
-		Nuker = {},
-		AnticheatBypass = {},
-		Invisibility = {},
-		Speed = {},
-		Name = {},
-		Cache = {}
-	}
-	local distances = {
-		windwalker = 80
-	}
-	local function cachedetection(player, detection)
-		if not HackerDetectorFileCache.Enabled then 
-			return 
-		end
-		if type(response) ~= 'table' then 
-			response = {}
-		end
-		if response[player.Name] then 
-			if table.find(response[player.Name], detection) == nil then 
-				table.insert(response[player.Name].Detections, detection) 
-			end
-		else
-			response[player.Name] = {DisplayName = player.DisplayName, UserId = tostring(player.DisplayName), Detections = {detection}}
-		end
-	end
-	local detectionmethods = {
-		Teleport = function(plr)
-			if table.find(detectedusers.Teleport, plr) then 
-				return 
-			end
-			if store.queueType:find('bedwars') == nil or plr:GetAttribute('Spectator') then 
-				return 
-			end
-			local lastbwteleport = plr:GetAttribute('LastTeleported')
-			table.insert(HackerDetector.Connections, plr:GetAttributeChangedSignal('LastTeleported'):Connect(function() lastbwteleport = plr:GetAttribute('LastTeleported') end))
-			table.insert(HackerDetector.Connections, plr.CharacterAdded:Connect(function()
-				oldpos = Vector3.zero
-				if table.find(detectedusers.Teleport, plr) then 
-					return 
-				end
-				 repeat task.wait() until isAlive(plr, true)
-				 local oldpos2 = plr.Character.HumanoidRootPart.Position 
-				 task.delay(2, function()
-					if isAlive(plr, true) then 
-						local newdistance = (plr.Character.HumanoidRootPart.Position - oldpos2).Magnitude 
-						if newdistance >= 400 and (plr:GetAttribute('LastTeleported') - lastbwteleport) == 0 then 
-							InfoNotification('HackerDetector', plr.DisplayName..' is using Teleport Exploit!', 100) 
-							table.insert(detectedusers.Teleport, plr)
-							cachedetection(plr, 'Teleport')
-							whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
-						end 
-					end
-				 end)
-			end))
-		end,
-		Speed = function(plr) 
-			repeat task.wait() until (store.matchState ~= 0 or not HackerDetector.Enabled or not HackerDetectorSpeed.Enabled)
-			if table.find(detectedusers.Speed, plr) then 
-				return 
-			end
-			local lastbwteleport = plr:GetAttribute('LastTeleported')
-			local oldpos = Vector3.zero 
-			table.insert(HackerDetector.Connections, plr:GetAttributeChangedSignal('LastTeleported'):Connect(function() lastbwteleport = plr:GetAttribute('LastTeleported') end)) 
-			table.insert(HackerDetector.Connections, plr.CharacterAdded:Connect(function() oldpos = Vector3.zero end))
-			repeat 
-				if isAlive(plr, true) then 
-					local magnitude = (plr.Character.HumanoidRootPart.Position - oldpos).Magnitude
-					if (plr:GetAttribute('LastTeleported') - lastbwteleport) ~= 0 and magnitude >= ((distances[plr:GetAttribute('PlayingAsKit') or ''] or 25) + (playerRaycasted(plr, Vector3.new(0, -15, 0)) and 0 or 40)) then 
-						InfoNotification('HackerDetector', plr.DisplayName..' is using speed!', 60)
-						whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
-					end
-					oldpos = plr.Character.HumanoidRootPart.Position
-					task.wait(2.5)
-					lastbwteleport = plr:GetAttribute('LastTeleported')
-				end
-			until not task.wait() or table.find(detectedusers.Speed, plr) or (not HackerDetector.Enabled or not HackerDetectorSpeed.Enabled)
-		end,
-		InfiniteFly = function(plr) 
-			pcall(function()
-				repeat 
-					if isAlive(plr, true) then 
-						local magnitude = (lplr.Character:WaitForChild("HumanoidRootPart").Position - plr.Character.HumanoidRootPart.Position).Magnitude
-						if magnitude >= 10000 and playerRaycast(plr) == nil and playerRaycast({Character = {PrimaryPart = {Position = lplr.Character:WaitForChild("HumanoidRootPart").Position}}}) then 
-							InfoNotification('HackerDetector', plr.DisplayName..' is using InfiniteFly!', 60) 
-							cachedetection(plr, 'InfiniteFly')
-							table.insert(detectedusers.InfiniteFly, plr)
-							whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
-						end
-						task.wait(2.5)
-					end
-				until not task.wait() or table.find(detectedusers.InfiniteFly, plr) or (not HackerDetector.Enabled or not HackerDetectorInfFly.Enabled)
-			end)
-		end,
-		Invisibility = function(plr) 
-			pcall(function()
-				if table.find(detectedusers.Invisibility, plr) then 
-					return 
-				end
-				repeat 
-					for i,v in next, (isAlive(plr, true) and plr.Character.Humanoid:GetPlayingAnimationTracks() or {}) do 
-						if v.Animation.AnimationId == 'http://www.roblox.com/asset/?id=11335949902' or v.Animation.AnimationId == 'rbxassetid://11335949902' then 
-							InfoNotification('HackerDetector', plr.DisplayName..' is using Invisibility!', 60) 
-							table.insert(detectedusers.Invisibility, plr)
-							cachedetection(plr, 'Invisibility')
-							whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
-						end
-					end
-					task.wait(0.5)
-				until table.find(detectedusers.Invisibility, plr) or (not HackerDetector.Enabled or not HackerDetectorInvis.Enabled)
-			end)
-		end,
-		Name = function(plr) 
-			pcall(function()
-				repeat task.wait() until pastesploit 
-				local lines = pastesploit:split('\n') 
-				for i,v in next, lines do 
-					if v:find('local Owner = ') then 
-						local name = lines[i]:gsub('local Owner =', ''):gsub('"', ''):gsub("'", '') 
-						if plr.Name == name then 
-							InfoNotification('HackerDetector', plr.DisplayName..' is the owner of Godsploit! They\'re is most likely cheating.', 60) 
-							cachedetection(plr, 'Name')
-							whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
-						end
-					end
-				end
-				for i,v in next, ({'godsploit', 'alsploit', 'renderintents'}) do 
-					local user = plr.Name:lower():find(v) 
-					local display = plr.DisplayName:lower():find(v)
-					if user or display then 
-						InfoNotification('HackerDetector', plr.DisplayName..' has "'..v..'" in their '..(user and 'username' or 'display name')..'! They might be cheating.', 20)
-						cachedetection(plr, 'Name') 
-						return 
-					end
-				end
-			end)
-		end, 
-		Cache = function(plr)
-			local success, response = pcall(function()
-				return httpService:JSONDecode(readfile('vape/Libraries/exploiters.json')) 
-			end) 
-			if type(response) == 'table' and response[plr.Name] then 
-				InfoNotification('HackerDetector', plr.DisplayName..' is cached on the exploiter database!', 30)
-				table.insert(detectedusers.Cached, plr)
-				whitelist.customtags[plr.Name] = {{text = 'VAPE USER', color = Color3.new(1, 1, 0)}}
-			end
-		end
-	}
-	local function bootdetections(player)
-		local detectiontoggles = {InfiniteFly = HackerDetectorInfFly, Teleport = HackerDetectorTeleport, Nuker = HackerDetectorNuker, Invisibility = HackerDetectorInvis, Speed = HackerDetectorSpeed, Name = HackerDetectorName, Cache = HackerDetectorFileCache}
-		for i, detection in next, detectionmethods do 
-			if detectiontoggles[i].Enabled then
-			   task.spawn(detection, player)
-			end
-		end
-	end
-	HackerDetector = GuiLibrary.ObjectsThatCanBeSaved.HotWindow.Api.CreateOptionsButton({
-		Name = 'HackerDetector',
-		HoverText = 'Notify when someone is\nsuspected of using exploits.',
-		ExtraText = function() return 'Vanilla' end,
-		Function = function(calling) 
-			if calling then 
-				for i,v in next, playersService:GetPlayers() do 
-					if v ~= lplr then 
-						bootdetections(v) 
-					end 
-				end
-				table.insert(HackerDetector.Connections, playersService.PlayerAdded:Connect(bootdetections))
-			end
-		end
-	})
-	HackerDetectorTeleport = HackerDetector.CreateToggle({
-		Name = 'Teleport',
-		Default = true,
-		Function = function() end
-	})
-	HackerDetectorInfFly = HackerDetector.CreateToggle({
-		Name = 'InfiniteFly',
-		Default = true,
-		Function = function() end
-	})
-	HackerDetectorInvis = HackerDetector.CreateToggle({
-		Name = 'Invisibility',
-		Default = true,
-		Function = function() end
-	})
-	HackerDetectorNuker = HackerDetector.CreateToggle({
-		Name = 'Nuker',
-		Default = true,
-		Function = function() end
-	})
-	HackerDetectorSpeed = HackerDetector.CreateToggle({
-		Name = 'Speed',
-		Default = true,
-		Function = function() end
-	})
-	HackerDetectorName = HackerDetector.CreateToggle({
-		Name = 'Name',
-		Default = true,
-		Function = function() end
-	})
-	HackerDetectorFileCache = HackerDetector.CreateToggle({
-		Name = 'Cached detections',
-		HoverText = 'Writes (vape/Libraries/exploiters.json)\neverytime someone is detected.',
-		Default = true,
-		Function = function() end
-	})
-end)
-
-run(function()
-	local DoubleHighJump = {Enabled = false}
-	local DoubleHighJumpHeight = {Value = 500}
-	local DoubleHighJumpHeight2 = {Value = 500}
-	local jumps = 0
-	DoubleHighJump = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
-		Name = "DoubleHighJump",
-		NoSave = true,
-		HoverText = "A very interesting high jump.",
-		Function = function(callback)
-			if callback then 
-				task.spawn(function()
-					if entityLibrary.isAlive and lplr.Character:WaitForChild("Humanoid").FloorMaterial == Enum.Material.Air or jumps > 0 then 
-						DoubleHighJump.ToggleButton(false) 
-						return
-					end
-					for i = 1, 2 do 
-						if not entityLibrary.isAlive then
-							DoubleHighJump.ToggleButton(false) 
-							return  
-						end
-						if i == 2 and lplr.Character:WaitForChild("Humanoid").FloorMaterial ~= Enum.Material.Air then 
-							continue
-						end
-						lplr.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(0, i == 1 and DoubleHighJumpHeight.Value or DoubleHighJumpHeight2.Value, 0)
-						jumps = i
-						task.wait(i == 1 and 1 or 0.3)
-					end
-					task.spawn(function()
-						for i = 1, 20 do 
-							if entityLibrary.isAlive then 
-								lplr.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Landed)
-							end
-						end
-					end)
-					task.delay(1.6, function() jumps = 0 end)
-					if DoubleHighJump.Enabled then
-					   DoubleHighJump.ToggleButton(false)
-					end
-				end)
-			else
-				VoidwareStore.jumpTick = tick() + 5
-			end
-		end
-	})
-	DoubleHighJumpHeight = DoubleHighJump.CreateSlider({
-		Name = "First Jump",
-		Min = 50,
-		Max = 500,
-		Default = 500,
-		Function = function() end
-	})
-	DoubleHighJumpHeight2 = DoubleHighJump.CreateSlider({
-		Name = "Second Jump",
-		Min = 50,
-		Max = 450,
-		Default = 450,
-		Function = function() end
-	})
-end)
-
---[[local StaffDetector = {Enabled = false}
-run(function()
-	local StaffDetector_Functions = {}
-	local StaffDetector_Table = {
-		Friends = {}
-	}
-	local StaffDetector_Action = {
-		DropdownValue = {Value = "Uninject"},
-		FunctionsTable = {
-			["Uninject"] = function()
-				GuiLibrary.SelfDestruct()
-			end, 
-			["Panic"] = function() 
-				task.spawn(function()
-					coroutine.close(shared.saveSettingsLoop)
-				end)
-				GuiLibrary.SaveSettings()
-				function GuiLibrary.SaveSettings()
-					return warningNotification("StaffDetector", "Saving Settings has been prevented from staff detector!", 1.5)
-				end
-				warningNotification("StaffDetector", "Saving settings has been disabled!", 1.5)
-				task.spawn(function()
-					repeat task.wait() until shared.GuiLibrary.ObjectsThatCanBeSaved.PanicOptionsButton
-					shared.GuiLibrary.ObjectsThatCanBeSaved.PanicOptionsButton.Api.ToggleButton(false)
-				end)
-			end,
-			["Lobby"] = function() 
-				TPService:Teleport(6872265039)
-			end
-		},
-	}
-	local StaffDetector_CustomBlacklist = {
-		Toggle = {Enabled = false},
-		TextList = {ObjectList = {}},
-		YoutuberToggle = {Enabled = false}
-	}
-	local StaffDetector_ReadStaffData = {Enabled = false}
-	local StaffDetector_Connections = {}
-	local TPService = game:GetService('TeleportService')
-	local HTTPService = game:GetService("HttpService")
-	local Players = game:GetService("Players")
-	function StaffDetector_Functions.SaveStaffData(staff, detection_type)
-		local suc, err = pcall(function()
-			return HTTPService:JSONDecode(readfile('vape/Libraries/StaffData.json'))
-		end)
-		local json = {}
-		if suc then
-			json = err
-		end
-		table.insert(json,{
-			StaffName = staff.DisplayName.."(@"..staff.Name..")",
-			Time = os.time(),
-			DetectionType = detection_type
-		})
-		if (not isfolder('vape/Libraries')) then makefolder('vape/Libraries') end
-		writefile('vape/Libraries/StaffData.json', HTTPService:JSONEncode(json))
-	end
-	function StaffDetector_Functions.Notify(text)
-		game:GetService('StarterGui'):SetCore(
-			'ChatMakeSystemMessage', 
-			{
-				Text = text, 
-				Color = Color3.fromRGB(255, 0, 0), 
-				Font = Enum.Font.GothamBold,
-				FontSize = Enum.FontSize.Size24
-			}
-		)
-	end
-	function StaffDetector_Functions.Trigger(plr, det_type, addInfo)
-		StaffDetector_Functions.SaveStaffData(plr, det_type)
-		local text = plr.DisplayName.."(@"..plr.Name..") has been detected as staff via "..det_type.." detection type! "..StaffDetector_Action.DropdownValue.." action type will be used shortly."
-		if addInfo then text = text.." Additonal Info: "..addInfo end
-		StaffDetector_Functions.Notify(text)
-		StaffDetector_Action.FunctionsTable[StaffDetector_Action.DropdownValue]()
-	end
-	function StaffDetector_Functions.Log_User_Friends(plr)
-		pcall(function()
-			local function iterPageItems(pages)
-				return coroutine.wrap(function()
-					local pagenum = 1
-					while true do
-						for _, item in ipairs(pages:GetCurrentPage()) do
-							coroutine.yield(item, pagenum)
-						end
-						if pages.IsFinished then
-							break
-						end
-						pages:AdvanceToNextPageAsync()
-						pagenum = pagenum + 1
-					end
-				end)
-			end
-			local friendPages = Players:GetFriendsAsync(plr.UserId)
-			for i,v in iterPageItems(friendPages) do
-				StaffDetector_Table.Friends[plr.UserId] = StaffDetector_Table.Friends[plr.UserId] or {}
-				table.insert(StaffDetector_Table.Friends[plr.UserId], i.Username)
-			end
-		end)
-	end
-	function StaffDetector_Functions.isFriend(plr)
-		local target = plr.Name
-		local state, friendOf = false, nil
-		for i,v in pairs(StaffDetector_Table.Friends) do
-			for i2, v2 in pairs(v) do
-				if v2 == target then
-					friendOf = Players:GetNameFromUserIdAsync(i)
-					state = true
-				end
-			end
-		end
-		return state, friendOf
-	end
-	function StaffDetector_Functions.groupCheck(plr)
-		local plrRank = plr:GetRankInGroup(5774246)
-		local state, Type = false, nil
-		local Rank_Table = {
-			[79029254] = "AC MOD",
-			[86172137] = "Lead AC MOD (chase :D)", -- lead ac mod :D luv u chase
-			[43926962] = "Developer",
-			[37929139] = "Developer",
-			[87049509] = "Owner",
-			[37929138] = "Owner"
-		}
-		if StaffDetector_CustomBlacklist.YoutuberToggle.Enabled then
-			Rank_Table[42378457] = "Youtuber/Famous"
-		end
-		if Rank_Table[plrRank] then state = true; Type = Rank_Table[plrRank] end
-		return state, Type
-	end
-	function StaffDetector_Functions.CheckAndTrackPlrTags(plr)
-		local blacklisted_tags = {
-			["Normal"] = {"AC MOD", "LEAD AC MOD", "DEV"},
-			["Clan"] = {}
-		}
-		if StaffDetector_CustomBlacklist.YoutuberToggle.Enabled then
-			table.insert(blacklisted_tags, "FAMOUS")
-		end
-		local blacklisted_clan_tags = {}
-		if StaffDetector_CustomBlacklist.Toggle.Enabled then
-			for i,v in pairs(StaffDetector_CustomBlacklist.TextList.ObjectList) do
-				table.insert(blacklisted_tags, v)
-			end
-		end
-		local function isBlacklisted(tag)
-			for i,v in pairs(blacklisted_tags.Normal) do
-				if v == tag then 
-					return true, "Normal"
-				end
-			end
-			for i,v in pairs(blacklisted_tags.Clan) do
-				if v == tag then 
-					return true, "Clan"
-				end
-			end
-			return false, nil
-		end
-		local function checkTags(tagsFolder)
-			pcall(function()
-				for i,v in pairs(tagsFolder:GetChildren()) do
-					if v.Text then
-						local state, Type = isBlacklisted(v.Text)
-						if state then
-							local add_on = "TagName: "..v.Text
-							if Type == "Clan" then add_on = add_on.." Type: "..Type end
-							StaffDetector_Functions.Trigger(plr, "TAG", add_on)
-						end
-					end
-				end
-			end)
-		end
-		local tags = plr:FindFirstChild("Tags")
-		if tags then
-			checkTags(tags)
-			local con = tags.ChildAdded:Connect(function() checkTags(tags) end)
-			table.insert(StaffDetector_Connections, con)
-		else
-			local con1 = plr.ChildAdded:Connect(function(child)
-				if child.Name == "Tags" and child.ClassName == "Folder" then
-					checkTags(child)
-					local con2 = child.ChildAdded:Connect(function() checkTags(child) end)
-					table.insert(StaffDetector_Connections, con2)
-				end
-			end)
-			table.insert(StaffDetector_Connections, con1)
-		end
-	end
-	local function checkUser(plr)
-		StaffDetector_Functions.Log_User_Friends(plr)
-		pcall(function()
-			StaffDetector_Functions.CheckAndTrackPlrTags(plr)
-		end)
-		task.spawn(function()
-			repeat task.wait() until plr.Character
-			if tostring(plr.Team) == "Spectators" then
-				local state, friendOf = StaffDetector_Functions.isFriend(plr)
-				if (not state) then
-					StaffDetector_Functions.Trigger(plr, "TeamCheck")
-				end
-			else
-				local state, Type = StaffDetector_Functions.groupCheck(plr)
-				if state then
-					StaffDetector_Functions.Trigger(plr, "GroupRoleCheck", "RoleDetected: "..Type)
-				end
-			end
-		end)
-	end
-	StaffDetector = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-		Name = "1[NEW] StaffDetector",
-		Function = function(callback)
-			if callback then
-				for i,v in pairs(game:GetService("Players"):GetPlayers()) do
-					if v ~= game:GetService("Players").LocalPlayer then
-						checkUser(v)
-					end
-				end
-				local con = game:GetService("Players").PlayerAdded:Connect(function(plr)
-					checkUser(plr)
-				end)
-				table.insert(StaffDetector_Connections, con)
-			else
-				for i, v in pairs(StaffDetector_Connections) do
-                    if v.Disconnect then pcall(function() v:Disconnect() end) continue end
-                    if v.disconnect then pcall(function() v:disconnect() end) continue end
-                end
-			end
-		end,
-		HoverText = "Detects staffs"
-	})
-	local list = {}
-	for i,v in pairs(StaffDetector_Action.FunctionsTable) do table.insert(list, i) end
-	StaffDetector_Action.DropdownValue = StaffDetector.CreateDropdown({
-        Name = 'Action',
-        List = list,
-        Function = function() end
-    })
-	StaffDetector_CustomBlacklist.TextList = StaffDetector.CreateTextList({
-		Name = "Blacklisted Clans",
-		TempText = "Clan Tag",
-		AddFunction = function()
-			if StaffDetector.Enabled then 
-				StaffDetector.ToggleButton(false)
-				StaffDetector.ToggleButton(false)
-			end
-		end,
-		RemoveFunction = function()
-			if StaffDetector.Enabled then 
-				StaffDetector.ToggleButton(false)
-				StaffDetector.ToggleButton(false)
-			end
-		end
-	})
-	StaffDetector_CustomBlacklist.TextList.Object.Visible = false
-	StaffDetector_CustomBlacklist.Toggle = StaffDetector.CreateToggle({
-		Name = "CustomBlacklist",
-		Function = function(callback)
-			if callback then
-				StaffDetector_CustomBlacklist.TextList.Object.Visible = true
-			else
-				StaffDetector_CustomBlacklist.TextList.Object.Visible = false
-			end
-		end
-	})
-	StaffDetector_CustomBlacklist.YoutuberToggle = StaffDetector.CreateToggle({
-		Name = "Youtuber/Famous blacklist",
-		Function = function(callback)
-			StaffDetector.ToggleButton(false)
-			StaffDetector.ToggleButton(false)
-		end,
-		Default = true
-	})
-	StaffDetector_ReadStaffData = StaffDetector.CreateToggle({
-		Name = "Read Current Staff Data",
-		Function = function(callback)
-			if callback then
-				pcall(function()
-					StaffDetector_ReadStaffData.ToggleButton(false)
-					local suc, err = pcall(function()
-						return HTTPService:JSONDecode(readfile('vape/Libraries/StaffData.json'))
-					end)
-					local json = {}
-					if suc then json = err end
-					if #json > 0 then
-						for i,v in pairs(json) do
-							local Staff_Name = v.StaffName
-							local Time = v.Time
-							local Detection_Type = v.DetectionType
-							if Staff_Name and Time and Detection_Type then
-								warningNotification("StaffDetector - Log "..tostring(i), "StaffName: "..Staff_Name.." Time_Of_Detection: "..tostring(Time).."\n Detection_Type: "..Detection_Type, 5)
-							end
-						end
-					else
-						warningNotification("StaffDetector", "No staff data was found!", 3)
-					end
-				end)
-			end
-		end
-	})
-end)
---]]
-
-pcall(function()
-	local StaffDetector = {Enabled = false}
-	run(function()
-		local TPService = game:GetService('TeleportService')
-		local HTTPService = game:GetService("HttpService")
-		local StaffDetector_Connections = {}
-		local StaffDetector_Functions = {}
-		local StaffDetector_Extra = {
-			JoinNotifier = {Enabled = false}
-		}
-		local StaffDetector_Checks = {
-			CustomBlacklist = {
-				"chasemaser",
-				"OrionYeets",
-				"lIllllllllllIllIIlll",
-				"AUW345678",
-				"GhostWxstaken",
-				"throughthewindow009",
-				"YT_GoraPlays",
-				"IllIIIIlllIlllIlIIII",
-				"celisnix",
-				"7SlyR",
-				"DoordashRP",
-				"IlIIIIIlIIIIIIIllI",
-				"lIIlIlIllllllIIlI",
-				"IllIIIIIIlllllIIlIlI",
-				"asapzyzz",
-				"WhyZev",
-				"sworduserpro332",
-				"Muscular_Gorilla",
-				"Typhoon_Kang"
-			}
-		}
-		local StaffDetector_Action = {
-			DropdownValue = {Value = "Uninject"},
-			FunctionsTable = {
-				["Uninject"] = function() GuiLibrary.SelfDestruct() end, 
-				["Panic"] = function() 
-					task.spawn(function() coroutine.close(shared.saveSettingsLoop) end)
-					GuiLibrary.SaveSettings()
-					function GuiLibrary.SaveSettings() return warningNotification("GuiLibrary - SaveSettings", "Saving Settings has been prevented from staff detector!", 1.5) end
-					warningNotification("StaffDetector", "Saving settings has been disabled!", 1.5)
-					task.spawn(function()
-						repeat task.wait() until shared.GuiLibrary.ObjectsThatCanBeSaved.PanicOptionsButton
-						shared.GuiLibrary.ObjectsThatCanBeSaved.PanicOptionsButton.Api.ToggleButton(false)
-					end)
-				end,
-				["Lobby"] = function() TPService:Teleport(6872265039) end
-			},
-		}
-		function StaffDetector_Functions.SaveStaffData(staff, detection_type)
-			local suc, res = pcall(function() return HTTPService:JSONDecode(readfile('vape/Libraries/StaffData.json')) end)
-			local json = suc and res or {}
-			table.insert(json, {StaffName = staff.DisplayName.."(@"..staff.Name..")", Time = os.time(), DetectionType = detection_type})
-			if (not isfolder('vape/Libraries')) then makefolder('vape/Libraries') end
-			writefile('vape/Libraries/StaffData.json', HTTPService:JSONEncode(json))
-		end
-		function StaffDetector_Functions.Notify(text)
-			pcall(function()
-				warningNotification("StaffDetector", tostring(text), 30)
-				game:GetService('StarterGui'):SetCore('ChatMakeSystemMessage', {Text = text, Color = Color3.fromRGB(255, 0, 0), Font = Enum.Font.GothamBold, FontSize = Enum.FontSize.Size24})
-			end)
-		end
-		function StaffDetector_Functions.Trigger(plr, det_type, addInfo)
-			StaffDetector_Functions.SaveStaffData(plr, det_type)
-			local text = plr.DisplayName.."(@"..plr.Name..") has been detected as staff via "..det_type.." detection type! "..StaffDetector_Action.DropdownValue.." action type will be used shortly."
-			if addInfo then text = text.." Additonal Info: "..addInfo end
-			StaffDetector_Functions.Notify(text)
-			StaffDetector_Action.FunctionsTable[StaffDetector_Action.DropdownValue]()
-		end
-		function StaffDetector_Checks:groupCheck(plr)
-			local suc, plrRank = pcall(function() plr:GetRankInGroup(5774246) end)
-			if (not suc) then plrRank = 0 end
-			local state, Type = false, nil
-			local Rank_Table = {[79029254] = "AC MOD", [86172137] = "Lead AC MOD (chase :D)", [43926962] = "Developer", [37929139] = "Developer", [87049509] = "Owner", [37929138] = "Owner"}
-			if StaffDetector_CustomBlacklist.YoutuberToggle.Enabled then Rank_Table[42378457] = "Youtuber/Famous" end
-			if Rank_Table[plrRank] then state = true; Type = Rank_Table[plrRank] end
-			if state then StaffDetector_Functions.Trigger(plr, "Group Check", "Rank: "..tostring(Type)) end
-		end
-		function StaffDetector_Checks:checkCustomBlacklist(plr) if table.find(self.CustomBlacklist, plr.Name) then StaffDetector_Functions.Trigger(plr, "CustomBlacklist") end end
-		function StaffDetector_Checks:checkPermissions(plr)
-			local KnitGotten, KnitClient
-			repeat
-				KnitGotten, KnitClient = pcall(function() return debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 6) end)
-				if KnitGotten then break end
-				task.wait()
-			until KnitGotten
-			repeat task.wait() until debug.getupvalue(KnitClient.Start, 1)
-			local PermissionController = KnitClient.Controllers.PermissionController
-			if KnitClient.Controllers.PermissionController:isStaffMember(plr) then StaffDetector_Functions.Trigger(plr, "PermissionController") end
-		end
-		function StaffDetector_Checks:check(plr)
-			task.spawn(function() pcall(function() self:checkCustomBlacklist(plr) end) end)
-			task.spawn(function() pcall(function() self:checkPermissions(plr) end) end)
-			task.spawn(function() pcall(function() self:groupCheck(plr) end) end)
-		end
-		StaffDetector = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-			Name = "StaffDetector [NEW]",
-			Function = function(call)
-				if call then
-					for i,v in pairs(game:GetService("Players"):GetPlayers()) do if v ~= game:GetService("Players").LocalPlayer then StaffDetector_Checks:check(v) end end
-					local con = game:GetService("Players").PlayerAdded:Connect(function(v)
-						if StaffDetector.Enabled then 
-							StaffDetector_Checks:check(v) 
-							if StaffDetector_Extra.JoinNotifier.Enabled and store.matchState > 0 then warningNotification("StaffDetector", tostring(v.Name).." has joined!", 3) end
-						end
-					end)
-					table.insert(StaffDetector_Connections, con)
-				else for i, v in pairs(StaffDetector_Connections) do if v.Disconnect then pcall(function() v:Disconnect() end) continue end; if v.disconnect then pcall(function() v:disconnect() end) continue end end end
-			end
-		})
-		StaffDetector.Restart = function() if StaffDetector.Enabled then StaffDetector.ToggleButton(false); StaffDetector.ToggleButton(false) end end
-		local list = {}
-		for i,v in pairs(StaffDetector_Action.FunctionsTable) do table.insert(list, i) end
-		StaffDetector_Action.DropdownValue = StaffDetector.CreateDropdown({Name = 'Action', List = list, Function = function() end})
-		StaffDetector_Extra.JoinNotifier = StaffDetector.CreateToggle({Name = "Illegal player notifier", Function = StaffDetector.Restart, Default = true})
-	end)
-	
-	task.spawn(function()
-		pcall(function()
-			repeat task.wait() until shared.VapeFullyLoaded
-			if (not StaffDetector.Enabled) then StaffDetector.ToggleButton(false) end
-		end)
-	end)
-end)	
-
---[[local isEnabled = function() return false end
-local function isEnabled(module)
-	return GuiLibrary.ObjectsThatCanBeSaved[module] and GuiLibrary.ObjectsThatCanBeSaved[module].Api.Enabled and true or false
-end
-local isAlive = function() return false end
-isAlive = function(plr, nohealth) 
-	plr = plr or lplr
-	local alive = false
-	if plr.Character and plr.Character:FindFirstChildWhichIsA('Humanoid') and plr.Character.PrimaryPart and plr.Character:FindFirstChild('Head') then 
-		alive = true
-	end
-	local success, health = pcall(function() return plr.Character:FindFirstChildWhichIsA('Humanoid').Health end)
-	if success and health <= 0 and not nohealth then
-		alive = false
-	end
-	return alive
-end
-local isnetworkowner = function(part)
-	local suc, res = pcall(function() return gethiddenproperty(part, "NetworkOwnershipRule") end)
-	if suc and res == Enum.NetworkOwnership.Manual then
-		sethiddenproperty(part, "NetworkOwnershipRule", Enum.NetworkOwnership.Automatic)
-		networkownerswitch = tick() + 8
-	end
-	return networkownerswitch <= tick()
-end
-run(function() 
-	local runService = game:GetService("RunService")
-	local Invisibility = {}
-	local collideparts = {}
-	local invisvisual = {}
-	local visualrootcolor = {Hue = 0, Sat = 0, Sat = 0}
-	local oldcamoffset = Vector3.zero
-	local oldcolor
-	Invisibility = GuiLibrary.ObjectsThatCanBeSaved.HotWindow.Api.CreateOptionsButton({
-		Name = 'Invisibility',
-		HoverText = 'Makes your invisible.',
-		Function = function(calling)
-			if calling then 
-				task.spawn(function()
-				repeat task.wait() until ((isAlive(lplr, true) or not Invisibility.Enabled) and (isEnabled('Lobby Check', 'Toggle') == false or store.matchState ~= 0))
-				if not Invisibility.Enabled then 
-					return 
-				end
-				task.wait(0.5)
-				local anim = Instance.new('Animation')
-				anim.AnimationId = 'rbxassetid://11360825341'
-				local anim2 = lplr.Character:WaitForChild("Humanoid").Animator:LoadAnimation(anim) 
-				for i,v in next, lplr.Character:GetDescendants() do 
-					if v:IsA('BasePart') and v.CanCollide and v ~= lplr.Character:WaitForChild("HumanoidRootPart") then 
-						v.CanCollide = false 
-						table.insert(collideparts, v) 
-					end 
-				end
-				table.insert(Invisibility.Connections, runService.Stepped:Connect(function()
-					for i,v in next, collideparts do 
-						pcall(function() v.CanCollide = false end)
-					end
-				end))
-				repeat 
-					if isEnabled('AnimationPlayer') then 
-						GuiLibrary.ObjectsThatCanBeSaved.AnimationPlayerOptionsButton.Api.ToggleButton()
-					end
-					if isAlive(lplr, true) and isnetworkowner(lplr.Character:WaitForChild("HumanoidRootPart")) then 
-						lplr.Character:WaitForChild("HumanoidRootPart").Transparency = (invisvisual.Enabled and 0.6 or 1)
-						oldcolor = lplr.Character:WaitForChild("HumanoidRootPart").Color
-						lplr.Character:WaitForChild("HumanoidRootPart").Color = Color3.fromHSV(visualrootcolor.Hue, visualrootcolor.Sat, visualrootcolor.Value)
-						anim2:Play(0.1, 9e9, 0.1) 
-					elseif Invisibility.Enabled then 
-						Invisibility.ToggleButton() 
-						break 
-					end	
-					task.wait()
-				until not Invisibility.Enabled
-			end)
-			else
-				for i,v in next, collideparts do 
-					pcall(function() v.CanCollide = true end) 
-				end
-				table.clear(collideparts)
-				if isAlive(lplr, true) then 
-					lplr.Character:WaitForChild("HumanoidRootPart").Transparency = 1 
-					lplr.Character:WaitForChild("HumanoidRootPart").Color = oldcolor
-					task.wait()
-				    bedwars.SwordController:swingSwordAtMouse() 
-				end
-			end
-		end
-	})
-	invisvisual = Invisibility.CreateToggle({
-		Name = 'Show Root',
-		Function = function(calling)
-			pcall(function() visualrootcolor.Object.Visible = calling end) 
-		end
-	})
-	visualrootcolor = Invisibility.CreateColorSlider({
-		Name = 'Root Color',
-		Function = function() end
-	})
-	visualrootcolor.Object.Visible = false
-end)--]]
-local Customisation = GuiLibrary.ObjectsThatCanBeSaved.CustomisationWindow.Api
 
 run(function()
 	local ZoomUnlocker = {Enabled = false}
@@ -9459,3 +9478,101 @@ run(function()
 		end
 	})
 end)
+
+if not shared.CheatEngineMode then
+	run(function()
+		local AntiLagback = {Enabled = false}
+		local control_module = require(lplr:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule")).controls
+		local old = control_module.moveFunction
+		local clone
+		local connection
+		local function clone_lplr_char()
+			if not (lplr.Character ~= nil and lplr.Character.PrimaryPart ~= nil) then return nil end
+			lplr.Character.Archivable = true
+		
+			local clone = lplr.Character:Clone()
+		
+			clone.Parent = game.Workspace
+			clone.Name = "Clone"
+		
+			clone.PrimaryPart.CFrame = lplr.Character.PrimaryPart.CFrame
+		
+			gameCamera.CameraSubject = clone.Humanoid	
+		
+			task.spawn(function()
+				for i, v in next, clone:FindFirstChild("Head"):GetDescendants() do
+					v:Destroy()
+				end
+				for i, v in next, clone:GetChildren() do
+					if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
+						v.Transparency = 1
+					end
+					if v:IsA("Accessory") then
+						v:FindFirstChild("Handle").Transparency = 1
+					end
+				end
+			end)
+			return clone
+		end
+		local function bypass()
+			clone = clone_lplr_char()
+			if not entitylib.isAlive then return AntiLagback:Toggle() end
+			if not clone then return AntiLagback:Toggle() end
+			control_module.moveFunction = function(self, vec, ...)
+				local RaycastParameters = RaycastParams.new()
+	
+				RaycastParameters.FilterType = Enum.RaycastFilterType.Include
+				RaycastParameters.FilterDescendantsInstances = {CollectionService:GetTagged("block")}
+	
+				local LookVector = Vector3.new(gameCamera.CFrame.LookVector.X, 0, gameCamera.CFrame.LookVector.Z).Unit
+	
+				if clone.PrimaryPart then
+					local Raycast = game.Workspace:Raycast((clone.PrimaryPart.Position + LookVector), Vector3.new(0, -1000, 0), RaycastParameters)
+					local Raycast2 = game.Workspace:Raycast(((clone.PrimaryPart.Position - Vector3.new(0, 15, 0)) + (LookVector * 3)), Vector3.new(0, -1000, 0), RaycastParameters)
+	
+					if Raycast or Raycast2 then
+						clone.PrimaryPart.CFrame = CFrame.new(clone.PrimaryPart.Position + (LookVector / (GetSpeed())))
+						vec = LookVector
+					end
+	
+					if (not clone) and entitylib.isAlive then
+						control_module.moveFunction = OldMoveFunction
+						gameCamera.CameraSubject = lplr.Character.Humanoid
+					end
+				end
+	
+				return old(self, vec, ...)
+			end
+		end
+		local function safe_revert()
+			control_module.moveFunction = old
+			if entitylib.isAlive then
+				gameCamera.CameraSubject = lplr.Character:WaitForChild("Humanoid")
+			end
+			pcall(function()
+				clone:Destroy()
+			end)
+		end
+		AntiLagback = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
+			Name = "AntiLagback",
+			Function = function(call)
+				if call then
+					connection = lplr:GetAttributeChangedSignal("LastTeleported"):Connect(function()
+						if entitylib.isAlive and store.matchState ~= 0 and not lplr.Character:FindFirstChildWhichIsA("ForceField") and (not vape.Modules.BedTP.Enabled) and (not vape.Modules.PlayerTP.Enabled) then					
+							bypass()
+							task.wait(4.5)
+							safe_revert()
+						end 
+					end)
+				else
+					pcall(function() connection:Disconnect() end)
+					control_module.moveFunction = old
+					if entitylib.isAlive then
+						gameCamera.CameraSubject = lplr.Character:WaitForChild("Humanoid")
+					end
+					pcall(function() clone:Destroy() end)
+				end
+			end
+		})
+	end)
+end
