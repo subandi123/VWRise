@@ -295,6 +295,23 @@ local bedwarsID = {
 	lobby = {6872265039}
 }
 local teleportConnection
+local function getExecutor()
+	if identifyexecutor ~= nil and type(identifyexecutor) == "function" then
+        local suc, res = pcall(function()
+            return identifyexecutor()
+        end)   
+        if suc then
+			return tostring(res)
+        else
+			return ''
+		end
+    else
+		return ''
+	end
+end
+local function isSalad()
+	return string.find(string.lower(getExecutor()), 'salad')
+end
 local function loadRise()
 	pload("Universal.lua", true)
 	pload("VWUniversal.lua", true)
@@ -376,7 +393,9 @@ local function loadRise()
 			end
 		end
 
-		queueonteleport(teleportScript)
+		if not isSalad() then
+			queueonteleport(teleportScript)
+		end
 	end)
 	coroutine.resume(saveSettingsLoop)
 	shared.VapeFullyLoaded = true
