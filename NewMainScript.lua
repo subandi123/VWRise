@@ -420,6 +420,9 @@ local url = RiseMode and "https://github.com/VapeVoidware/VWRise/" or "https://g
 local commit = "main"
 writefile(baseDirectory.."commithash2.txt", commit)
 commit = '323f32819595fbe410bb81259880f15c07b9e2cc'
+if shared.TestingMode then
+    commit = 'be3dbce6f7e3da0b401404fad048916519ce83e4'
+end
 commit = shared.CustomCommit and tostring(shared.CustomCommit) or commit
 writefile(baseDirectory.."commithash2.txt", commit)
 local function vapeGithubRequest(scripturl, isImportant)
