@@ -31,6 +31,11 @@ local function checkExecutor()
                 if string.find(string.lower(tostring(res)), v) then CheatEngineMode = true end
             end
         end
+        if string.find(string.lower(tostring(res)), 'xeno') then
+            pcall(function()
+                getgenv().queue_on_teleport = function() warn('queue_on_teleport disabled!') end
+            end)
+        end
     end
 end
 task.spawn(function() pcall(checkExecutor) end)
