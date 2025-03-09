@@ -4572,13 +4572,13 @@ run(function()
 					killaurabox.FillTransparency = 0.39
 					killaurabox.FillColor = Color3.fromHSV(killauracolor.Hue, killauracolor.Sat, killauracolor.Value)
 					if shared.RiseMode and GuiLibrary.GUICoreColor and GuiLibrary.GUICoreColorChanged then
-						killaurabox.FillColor = GuiLibrary.GUICoreColor
+						killaurabox.Color3 = GuiLibrary.GUICoreColor
 						GuiLibrary.GUICoreColorChanged.Event:Connect(function()
-							killaurabox.FillColor = GuiLibrary.GUICoreColor
+							killaurabox.Color3 = GuiLibrary.GUICoreColor
 						end)
 					else
 						killauracolorChanged.Event:Connect(function()
-							killaurabox.FillColor = Color3.fromHSV(killauracolor.Hue, killauracolor.Sat, killauracolor.Value)
+							killaurabox.Color3 = Color3.fromHSV(killauracolor.Hue, killauracolor.Sat, killauracolor.Value)
 						end)
 					end
 					killaurabox.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
