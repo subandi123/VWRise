@@ -3165,6 +3165,7 @@ run(function()
 		return true
 	end
 	local Slowmode = {Value = 2}
+	local CoreConnection
 	GodMode = GuiLibrary.ObjectsThatCanBeSaved.BlatantWindow.Api.CreateOptionsButton({
 		Name = "AntiHit/Godmode",
 		Function = function(callback)
@@ -3199,11 +3200,11 @@ run(function()
 					
 														lplr.Character:WaitForChild("HumanoidRootPart").CFrame = lplr.Character:WaitForChild("HumanoidRootPart").CFrame + Vector3.new(0,100,0)
 					
-														GodMode:Clean(game:GetService("RunService").RenderStepped:Connect(function()
+														CoreConnection = game:GetService("RunService").RenderStepped:Connect(function()
 															if Clone ~= nil and Clone:FindFirstChild("HumanoidRootPart") then
 																Clone.HumanoidRootPart.Position = Vector3.new(lplr.Character:WaitForChild("HumanoidRootPart").Position.X, Clone.HumanoidRootPart.Position.Y, lplr.Character:WaitForChild("HumanoidRootPart").Position.Z)
 															end
-														end))
+														end)
 					
 														task.wait(Slowmode.Value/10)
 														lplr.Character:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(lplr.Character:WaitForChild("HumanoidRootPart").Velocity.X, -1, lplr.Character:WaitForChild("HumanoidRootPart").Velocity.Z)
@@ -3221,6 +3222,10 @@ run(function()
 						end)
 						if not res then warn(msg) end
 					until (not GodMode.Enabled)
+				end)
+			else
+				pcall(function()
+					CoreConnection:Disconnect()
 				end)
 			end
 		end
