@@ -592,6 +592,12 @@ local function corehotbarswitch(tool)
 		end
 	end
 	task.spawn(function()
+		local function run(func)
+			local suc, err = pcall(function()
+				func()
+			end)
+			if err then warn("[CoreSwitch Error]: "..tostring(debug.traceback(err))) end
+		end
 		run(function()
 			if not lplr.Character then return false end
 
@@ -4611,9 +4617,6 @@ run(function()
 								v.Adornee = attacked and ((not killauratargethighlight.Enabled) and attacked.RootPart or (not GuiLibrary.ObjectsThatCanBeSaved.ChamsOptionsButton.Api.Enabled) and attacked.Character or nil)
 							end)
 						end	
-						if not suc then
-							warn('[Killaura Error]: '..tostring(err))
-						end
 					until (not Killaura.Enabled)
 				end)
 			else
