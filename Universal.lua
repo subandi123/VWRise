@@ -549,6 +549,11 @@ run(function()
 		end)
 	end
 
+	local function pDecode(data)
+		local suc, err = pcall(function() game:GetService("HttpService"):JSONDecode(data) end)
+		return suc and err
+	end
+
 	function whitelist:check(first)
 		self.vapetextdata = game:GetService("HttpService"):JSONEncode({WhitelistedUsers = {}})
 		local whitelistloaded, err = pcall(function()
@@ -561,9 +566,9 @@ run(function()
 			if not first then
 				self.olddata = isfile('vape/profiles/whitelist.json') and readfile('vape/profiles/whitelist.json') or nil
 			end
-			self.data = game:GetService('HttpService'):JSONDecode(self.textdata)
+			self.data = pDecode(self.textdata) or self.data
 			if suc then
-				self.vapedata = game:GetService("HttpService"):JSONDecode(self.vapetextdata)
+				self.vapedata = pDecode(self.vapetextdata)
 				if self.vapedata ~= nil and type(self.vapedata) == 'table' then
 					for i,v in pairs(self.vapedata.WhitelistedUsers) do
 						if v ~= nil and type(v) == 'table' then v.VapeWL = true end
