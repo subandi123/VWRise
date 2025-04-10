@@ -5250,6 +5250,8 @@ run(function()
     local AutoWhisper = {Enabled = false}
 	local FlyWhisper = {Enabled = false}
 	local HealWhisper = {Enabled = false}
+	local rayCheck = RaycastParams.new()
+	rayCheck.RespectCanCollide = true
 
 	local CoreConnections = {}
 	local function clean(con)
@@ -5276,7 +5278,10 @@ run(function()
 						local root = chr:FindFirstChild('HumanoidRootPart')
 						isWhispering = true
 						repeat
-							if FlyWhisper.Enabled and root.Position.Y <= lowestpoint then
+							rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiVoidPart}
+				                        rayCheck.CollisionGroup = root.CollisionGroup
+			
+							if FlyWhisper.Enabled and root.Velocity.Y <= -85 and not workspace:Raycast(root.Position, Vector3.new(0, -100, 0), rayCheck) then
 								if bedwars.AbilityController:canUseAbility('OWL_LIFT') then
 									bedwars.AbilityController:useAbility('OWL_LIFT')
 								end
