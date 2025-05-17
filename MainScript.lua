@@ -351,7 +351,7 @@ local function start()
         local isequipped, extra = false, nil
         
         pcall(function()
-            char.HumanoidRootPart.CFrame = CFrame.new(workspace.Part.Position + char.HumanoidRootPart.Size)
+            char.HumanoidRootPart.CFrame = CFrame.new(workspace.Part.Position + char.HumanoidRootPart.Size + Vector3.new(0,workspace.Part.Size/2, 0))
         end)
 
         if clientdata.get("team") == "Parents" then
