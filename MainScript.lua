@@ -78,6 +78,10 @@ local function get_pet_model()
 end
 
 local function get_furniture(name)
+    local start = os.time()
+    while #furniture:GetChildren() == 0 or (os.time() - start) <= 15 do
+        task.wait(1)
+    end
     for _, furniture in pairs(furniture:GetChildren()) do
         local child = furniture:GetChildren()[1]
         
