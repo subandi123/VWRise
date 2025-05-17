@@ -413,7 +413,7 @@ local function start()
                           
                             task.spawn(function() routerclient.get("TeamAPI/Spawn"):InvokeServer() end)
                             localplayer.CharacterAdded:Wait()
-                            break
+                            return passed
                         end
                     end
                 end
@@ -422,5 +422,11 @@ local function start()
 end
                     
 while task.wait(5) do
-    start()
+    local tor = false
+    local st = task.spawn(function()
+        tor = start()
+    end)
+    while not tor do
+        task.wait()
+    end
 end
