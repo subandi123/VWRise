@@ -1,393 +1,422 @@
 repeat task.wait() until game:IsLoaded()
 
-local GuiLibrary
-local VWFunctions
+set_thread_identity(2)
+local workspace = game:GetService("Workspace")
+local players = game:GetService("Players")
+local replicatedstorage = game:GetService("ReplicatedStorage")
+local runservice = game:GetService("RunService")
 
-shared.RiseMode = true
+local fsys = require(replicatedstorage:WaitForChild("Fsys")).load
+local routerclient = fsys("RouterClient")
+local clientdata = fsys("ClientData")
+local toolwrapper = fsys("ToolWrapper")
+local inventorydb = fsys("InventoryDB")
+local shophandler = fsys("ShopM")
+local petactions = fsys("PetActions")
+local client_tool_manager = fsys("ClientToolManager")
+local equip_permissions = fsys("EquipPermissions")
+local location = fsys("Location")
 
-local inputService = game:GetService("UserInputService")
+local localplayer = players.LocalPlayer
+local static_map = workspace:WaitForChild("StaticMap")
+local furniture = workspace:WaitForChild("HouseInteriors").furniture
+local egg_name = "moon_2025_egg"
+_G.task_list = {baby_ailments={}, ailments={}}
+local local_events = setmetatable({}, {
+    __index = function(self, index)
+        self[index] = Instance.new("BindableEvent")
+        return self[index]
+    end
+})
+local previous_task_list = {}
 
-local queueonteleport = syn and syn.queue_on_teleport or queue_on_teleport or function() end
-local isfile = isfile or function(file)
-	local suc, res = pcall(function() return readfile(file) end)
-	return suc and res ~= nil
-end
+local standing_part
+local setlocation
 
-assert(not shared.RiseExecuted, "Rise Already Injected")
-shared.RiseExecuted = true
-shared.VapeExecuted = true
 
-for i,v in pairs({"rise", "rise/CustomModules", "rise/Profiles", "rise/Assets", "rise/Libraries", "rise/fonts"}) do if not isfolder(v) then makefolder(v) end end
-
-local function riseGithubRequest(scripturl)
-    print("1", scripturl)
-	local suc, res = pcall(function() return game:HttpGet('https://raw.githubusercontent.com/VapeVoidware/VWRise/main/'..scripturl, true) end)
-	writefile("rise/"..scripturl, res)
-	return readfile("rise/"..scripturl)
-end
-
-local suc, err = pcall(function()
-	return getrenv().require(game:GetService("CoreGui").RobloxGui.Modules.ErrorPrompt)
+runservice.Stepped:Connect(function()
+    pcall(function()
+        if game:GetService("Players").LocalPlayer.PlayerGui.NewsApp.Enabled then
+            for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.NewsApp:GetDescendants()) do
+                if v:IsA("GuiButton") and v.Name == "PlayButton" then
+                    for _,v2 in pairs(getconnections(v.MouseButton1Down)) do
+                        v2:Fire()
+                    end
+                    for _,v2 in pairs(getconnections(v.MouseButton1Click)) do
+                        v2:Fire()
+                    end
+                end
+            end
+        end        
+    end)
 end)
-if (not suc) then shared.CheatEngineMode = true end
 
-local function downloadFonts()
-	local function downloadFont(path)
-	    print("2", path)
-		riseGithubRequest(path)
-	end
-	local res1 = "https://api.github.com/repos/VapeVoidware/VWRise/contents/fonts"
-	local res = game:HttpGet(res1, true)
-	local fonts = {}
-	if res ~= '404: Not Found' then 
-		for i,v in next, game:GetService("HttpService"):JSONDecode(res) do 
-			if type(v) == 'table' and v.name then 
-				table.insert(fonts, v.name) 
-			end
-		end
-	end
-	for i, v in pairs(fonts) do
-	    print("3", i, v)
-        downloadFont("fonts/"..fonts[i])
-        task.wait()
+
+local function get_item(category, name)
+    local inventory = clientdata.get("inventory")[category] or {}
+    for _, item in pairs(inventory) do
+        if not name or item.id == name then
+            return item
+        end
+    end
+    return nil
+end
+
+local function get_pet_model()
+    for _, petmodel in pairs(workspace.Pets:GetChildren()) do
+        if petmodel:IsA("Model") then
+            local humanoidrootpart = petmodel:FindFirstChild("HumanoidRootPart")
+            
+            if humanoidrootpart and humanoidrootpart:IsA("BasePart") then
+                if isnetworkowner(humanoidrootpart) then
+                    return petmodel
+                end
+            end
+        end
+    end
+    return nil
+end
+
+local function get_furniture(name)
+    for _, furniture in pairs(furniture:GetChildren()) do
+        local child = furniture:GetChildren()[1]
+        
+        if child and child.Name == name then
+            return child
+        end
+    end
+    return nil
+end
+
+local function setup_part()
+    standing_part = Instance.new("Part")
+    standing_part.Parent = workspace
+    standing_part.Position = Vector3.new(0,3000, 0)
+    standing_part.Anchored = true
+    standing_part.Size = Vector3.new(600,2,600)
+
+    local platform_part = Instance.new("Part")
+    platform_part.Name = "Part2"
+    platform_part.Parent = workspace
+    platform_part.Position = workspace.StaticMap:WaitForChild("Campsite").CampsiteOrigin.Position
+    platform_part.Anchored = true
+    platform_part.Size = Vector3.new(2500,2,2500)
+end
+
+local function loop_walk(args, time)
+    local humanoid = args['character']:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+
+    local rootpart = args['character']:FindFirstChild("HumanoidRootPart")
+    if not rootpart then return end
+
+    local current_pos = rootpart.Position
+    local current_time = os.time()
+    while (os.time() - current_time) < time do
+        local target_pos = current_pos + Vector3.new(0,0,15)
+        humanoid:MoveTo(target_pos)
+        humanoid.MoveToFinished:Wait()
+        humanoid:MoveTo(current_pos)
+        humanoid.MoveToFinished:Wait()
     end
 end
-downloadFonts()
-shared.GuiLibraryFont = Font.new(
-    "rbxasset://fonts/families/GothamSSm.json", 
-    Enum.FontWeight.Medium,
-    Enum.FontStyle.Normal -- Normal
-)
-local UIS = game:GetService("UserInputService")
-shared.ClickGUIScale = UIS.TouchEnabled and 1.1 or 1
-shared.ClickUIARC = UIS.TouchEnabled and 1.4 or 1.3
 
-GuiLibrary = pload("GuiLibrary.lua", true, true)
-VWFunctions = pload("Libraries/VoidwareFunctions.lua", true, true)
-
-GuiLibrary.SelfDestructEvent.Event:Connect(function() VWFunctions.SelfDestructEvent:Fire() end)
-
-VWFunctions.GlobaliseObject("GuiLibrary", GuiLibrary)
-VWFunctions.GlobaliseObject("VoidwareFunctions", VWFunctions)
-VWFunctions.GlobaliseObject("VWFunctions", VWFunctions)
-
-VWFunctions.GlobaliseObject("cprint", function(tbl) if tbl and type(tbl) == "table" then for i,v in pairs(tbl) do print(tbl, i, v) end end end)
-
-shared.VoidwareFunctions = VWFunctions
-getgenv().VoidwareFunctions = VWFunctions
-
-shared.risegui = GuiLibrary
-shared.GuiLibrary = GuiLibrary
-
-VoidwareFunctions.Controllers:register("UpdateUI", {UIUpdate = Instance.new("BindableEvent")})
-GuiLibrary.GUIColorChanged.Event:Connect(function()
-	local h, s, v = GuiLibrary.MainColor:ToHSV()
-	VoidwareFunctions.Controllers:get("UpdateUI").UIUpdate:Fire(h,s,v)
-end)
-
-local saveSettingsLoop = coroutine.create(function()
-	if inputService.TouchEnabled then return end
-	repeat
-		GuiLibrary.SaveSettings()
-        task.wait(10)
-	until not shared.RiseExecuted or not shared.GuiLibrary
-end)
-
-local function encode(tbl)
-    return game:GetService("HttpService"):JSONEncode(tbl)
+local function get_pet()
+    local inventory = clientdata.get("inventory")["pets"] or {}
+    local highest_pet = nil
+    local highest_level = -1
+    local eggs = {}
+    
+    for _, item in pairs(inventory) do
+        if item.id == egg_name then
+            table.insert(eggs, item)
+        elseif item.id ~= "practice_dog" then
+            local current_level = item.properties.friendship_level or 0
+            if current_level > highest_level then
+                highest_level = current_level
+                highest_pet = item
+            end
+        end
+    end
+    
+    return {
+        pet = highest_pet,
+        eggs = eggs
+    }
 end
-VoidwareFunctions.GlobaliseObject("encode", encode)
-local function decode(tbl)
-    return game:GetService("HttpService"):JSONDecode(tbl)
-end
-VoidwareFunctions.GlobaliseObject("decode", decode)
 
-local Search = GuiLibrary.CreateWindow({
-	Name = "Search",
-	Icon = "vape/assets/CoreSearch.png",
-	IconSize = 15
-})
-local Combat = GuiLibrary.CreateWindow({
-	Name = "Combat",
-	Icon = "vape/assets/CoreAttack.png",
-	IconSize = 15
-})
-local World = GuiLibrary.CreateWindow({
-	Name = "Movement",
-	Icon = "vape/assets/CoreMovement.png",
-	IconSize = 16
-})
-GuiLibrary.ObjectsThatCanBeSaved["WorldWindow"] = GuiLibrary.ObjectsThatCanBeSaved["MovementWindow"]
-local Utility = GuiLibrary.CreateWindow({
-	Name = "Player",
-	Icon = "vape/assets/CorePlayer.png",
-	IconSize = 17
-})
-GuiLibrary.ObjectsThatCanBeSaved["UtilityWindow"] = GuiLibrary.ObjectsThatCanBeSaved["PlayerWindow"]
-local Render = GuiLibrary.CreateWindow({
-	Name = "Render",
-	Icon = "vape/assets/CoreRender.png",
-	IconSize = 17
-})
-local Blatant = GuiLibrary.CreateWindow({
-	Name = "Exploit",
-	Icon = "vape/assets/CoreAttack.png",
-	IconSize = 16
-})
-GuiLibrary.ObjectsThatCanBeSaved["BlatantWindow"] = GuiLibrary.ObjectsThatCanBeSaved["ExploitWindow"]
-local Legit = GuiLibrary.CreateWindow({
-	Name = "Legit",
-	Icon = "vape/assets/CoreGhost.png",
-	IconSize = 16
-})
-GuiLibrary.ObjectsThatCanBeSaved["OtherWindow"] = GuiLibrary.ObjectsThatCanBeSaved["LegitWindow"]
-local Settings = GuiLibrary.CreateWindow({
-	Name = "Settings",
-	Icon = "vape/assets/CoreSettings.png",
-	IconSize = 16
-})
-local RestartVoidware = {Enabled = false}
-RestartVoidware = GuiLibrary.ObjectsThatCanBeSaved.SettingsWindow.Api.CreateOptionsButton({
-	Name = "Restart",
-	Function = function(call)
-		if call then GuiLibrary.Uninject(); pload("NewMainScript.lua") end
-	end,
-	NoSave = true,
-	HoverText = "Restarts VW Rise",
-	Default = false
-})
-local Uninject = {Enabled = false}
-Uninject = GuiLibrary.ObjectsThatCanBeSaved.SettingsWindow.Api.CreateOptionsButton({
-	Name = "Uninject",
-	Function = function(call) if call then GuiLibrary.Uninject() end end,
-	NoSave = true,
-	HoverText = "Uninjects VW Rise",
-	Default = false
-})
-local SaveProfiles = {Enabled = false}
-SaveProfiles = GuiLibrary.ObjectsThatCanBeSaved.SettingsWindow.Api.CreateOptionsButton({
-	Name = "SaveProfiles",
-	Function = function(call) if call then GuiLibrary.SaveProfiles(); SaveProfiles.ToggleButton(false) end end,
-	NoSave = true,
-	HoverText = "Saves your current config of VW Rise",
-	Default = false
-})
-local GUIbind = GuiLibrary.CreateGUIBind("Settings")
-local Interface = {Enabled = false}
-Interface = GuiLibrary.ObjectsThatCanBeSaved.SettingsWindow.Api.CreateOptionsButton({
-    Name = "Interface",
-    Function = function(call)
-        for i, v in pairs(GuiLibrary.Interface) do 
-            v.Visible = call
+local function buy_item(name)
+    local status = routerclient.get("ShopAPI/BuyItem"):InvokeServer("food", name, {buy_count = 1})
+    return status == "success" and true or false
+end
+
+local function use_item(args, item)
+    if args then
+        if args['character'].Parent == workspace.Pets then
+            routerclient.get("PetObjectAPI/CreatePetObject"):InvokeServer("__Enum_PetObjectCreatorType_2", {additional_consume_uniques = {}, pet_unique = args['unique'], unique_id = item.unique})
+            task.wait(6)
+        else
+            routerclient.get("ToolAPI/ServerUseTool"):FireServer(item.unique, "START")
+            task.wait(2)
+            routerclient.get("ToolAPI/ServerUseTool"):FireServer(item.unique, "END")
+            task.wait(1)
+        end
+    end
+end
+
+local function activate_furniture(furniture, character, extra_args)
+    local parts = string.split(furniture.Parent.Name, "/")
+    local owner, uniqueid = parts[1], parts[#parts]
+    local action_name = furniture:FindFirstChild('UseBlocks'):GetChildren()[1].Name
+    local owner = (owner == localplayer.Name) and localplayer or nil
+    local extra_args = extra_args and {cframe = furniture:GetPrimaryPartCFrame()} or nil
+
+    routerclient.get("HousingAPI/ActivateFurniture"):InvokeServer(owner,uniqueid,action_name, extra_args, character)
+end
+
+local function set_location(...)
+    local args = {...}
+    local char = localplayer.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    
+    if args[1] == "SetPosition" and hrp then
+        hrp.CFrame = args[2]
+    elseif hrp then
+        routerclient.get("LocationAPI/SetLocation"):FireServer(table.unpack(args))
+    end
+end
+
+
+local task_handler = {
+    beach_party = function(args)
+        set_location("MainMap", nil, "Desert")
+        set_location("SetPosition", CFrame.new(static_map.Beach.BeachPartyAilmentTarget.Position + Vector3.new(0, 10, 0)))
+    end,
+    
+    bored = function(args)
+        set_location("MainMap", nil, "Desert")
+        set_location("SetPosition", CFrame.new(static_map.Park.AilmentTarget.Position + Vector3.new(0, 10, 0)))
+    end,
+    
+    camping = function(args)
+        set_location("MainMap", nil, "Desert")
+        set_location("SetPosition", CFrame.new(static_map.Campsite.CampsiteOrigin.Position + Vector3.new(0, 10, 0)))
+    end,
+    
+    dirty = function(args)
+        set_location("housing", "MainDoor", {house_owner = localplayer})
+        activate_furniture(get_furniture("CheapPetBathtub"), args['character'], true)
+    end,
+    
+    moon = function(args)
+        set_location("MoonInterior", nil, nil)
+    end,
+    
+    pizza_party = function(args)
+        set_location("PizzaShop", nil, nil)
+    end,
+    
+    salon = function(args)
+        set_location("Salon", nil, nil)
+    end,
+    
+    school = function(args)
+        set_location("School", nil, nil)
+    end,
+    sick = function(args)
+        set_location("Hospital", nil, nil)
+        buy_item("healing_apple")
+        use_item(args, get_item("food", "healing_apple"))
+    end,
+    
+    sleepy = function(args)
+        set_location("housing", "MainDoor", {house_owner = localplayer})
+        activate_furniture(get_furniture("BasicCrib"), args['character'], true)
+    end,
+    
+    toilet = function(args)
+        set_location("housing", "MainDoor", {house_owner = localplayer})
+        activate_furniture(get_furniture("Toilet"), args['character'], true)
+    end,
+    hungry = function(args) 
+        buy_item("apple")
+        local apple = get_item("food", "apple")
+        if apple then
+            repeat
+                use_item(args, get_item("food", "apple"))
+            until not clientdata.get("inventory")["food"][apple.unique]
         end
     end,
-    HoverText = "The clients Interface with all information",
-    ExtraText = function() return GuiLibrary.CurrentTheme end,
-    Default = true,
-	Restricted = true
-})
-local BackGroundDropdown = Interface.CreateDropdown({
-    Name = "BackGround",
-    Function = function(val)
-        GuiLibrary.Settings.bkg = val == "Normal"
-        GuiLibrary.UpdateTextGUI()
+    pet_me = function(args) 
+        local pet_char = args['character']
+        routerclient.get("AdoptAPI/FocusPet"):FireServer(pet_char)       
+        routerclient.get("PetAPI/ReplicateActivePerformances"):FireServer(pet_char, {FocusPet = true, Dirty = true})
+        task.wait(3)
+        routerclient.get("AilmentsAPI/ProgressPetMeAilment"):FireServer(args['unique'])
     end,
-    List = {"Normal", "Off"}
-})
-
-local ModulesDropdown = Interface.CreateDropdown({
-    Name = "Modules to Show",
-    Function = function(val)
-        GuiLibrary.Settings.mode = val
-        GuiLibrary.UpdateTextGUI()
+    play = function(args) 
+        for index=1, 6 do
+            routerclient.get("PetObjectAPI/CreatePetObject"):InvokeServer("__Enum_PetObjectCreatorType_1", {reaction_name = "ThrowToyReaction", unique_id = get_item("toys", "squeaky_bone_default").unique})
+            task.wait(4)
+        end
     end,
-    List = {"Exclude Render", "All", "Only bound"}
-})
-
-local SidebarToggle = Interface.CreateToggle({
-    Name = "Sidebar",
-    Function = function(val)
-        GuiLibrary.Settings.sidebar = val
-        GuiLibrary.UpdateTextGUI()
+    
+    ride = function(args) 
+        local stroller = get_item("strollers", "stroller-default")
+        local equip_status, _ = client_tool_manager.equip(stroller)
+        if equip_status then
+            routerclient.get("AdoptAPI/UseStroller"):InvokeServer(localplayer, get_pet_model(), game:GetService("Players").LocalPlayer.Character:WaitForChild("StrollerTool"):WaitForChild("ModelHandle"):WaitForChild("TouchToSits"):WaitForChild("TouchToSit"))
+            loop_walk(args, 40)
+        end
     end,
-    Default = true
-})
-
-local SuffixToggle = Interface.CreateToggle({
-    Name = "Suffix",
-    Function = function(val)
-        GuiLibrary.Settings.suffix = val
-        GuiLibrary.UpdateTextGUI()
+    
+    thirsty = function(args) 
+        buy_item("water")
+        local water = get_item("food", "water")
+        if water then
+            repeat
+                use_item(args, get_item("food", "water"))
+            until not clientdata.get("inventory")["food"][water.unique]
+        end
     end,
-    Default = true
-})
-
-local LowercaseToggle = Interface.CreateToggle({
-    Name = "Lowercase",
-    Function = function(val)
-        GuiLibrary.Settings.lowercase = val
-        GuiLibrary.UpdateTextGUI()
-    end,
-	Default = false
-})
-
-local RemoveSpacesToggle = Interface.CreateToggle({
-    Name = "Remove spaces",
-    Function = function(val)
-        GuiLibrary.Settings.spaces = not val
-        GuiLibrary.UpdateTextGUI()
+    
+    walk = function(args) 
+        loop_walk(args, 40)
     end
-})
-
-local NotificationsToggle = Interface.CreateToggle({
-    Name = "Toggle Notifications",
-    Function = function(val)
-        GuiLibrary.Settings.notifs = val
-        GuiLibrary.UpdateTextGUI()
-    end,
-    Default = true
-})
-local TargetInfo = Render.CreateOptionsButton({
-	Name = "TargetInfo",
-	Function = function(call)
-		GuiLibrary.TargetInfo.Visible = call
-		GuiLibrary.Settings.targetinfoenabled = call
-	end,
-	HoverText = "Displays information about the entity you're fighting",
-    ExtraText = "Modern"
-})
-TargetInfo.CreateToggle({
-	Name = "Follow Player",
-	Function = function(call)
-		GuiLibrary.targetinfofollow = call
-	end
-})
-GuiLibrary.CreateThemeCategory({
-	Name = "Themes",
-	Icon = "vape/assets/CoreSearch.png"
-})
-
-local function recodeWindows(tbl) for i,v in pairs(tbl) do GuiLibrary.ObjectsThatCanBeSaved[i.."Window"] = GuiLibrary.ObjectsThatCanBeSaved[v.."Window"] end end
-local Rewrite_Windows_Corresponder = {["Funny"] = "Blatant",["Hot"] = "Blatant",["Exploits"] = "Blatant",["Customisation"] = "Utility",["TP"] = "World",["Voidware"] = "Utility"}
-recodeWindows(Rewrite_Windows_Corresponder)
-
-GuiLibrary.ObjectsThatCanBeSaved["Friends ColorSliderColor"] = {Api = {Hue = 0.33, Sat = 1, Value = 1}}
-GuiLibrary.ObjectsThatCanBeSaved["Use FriendsToggle"] = {Api = {Enabled = false}}
-GuiLibrary.ObjectsThatCanBeSaved.TargetsListTextCircleList = {Api = {ObjectList = {}, TargetColorRefresh = Instance.new("BindableEvent"), ObjectListEnabled = {}}}
-GuiLibrary["ObjectsThatCanBeSaved"]["Lobby CheckToggle"] = {Api = {Enabled = true}} 
-GuiLibrary.ObjectsThatCanBeSaved.FriendsListTextCircleList = {Api = {ObjectList = {}, FriendColorRefresh = Instance.new("BindableEvent"), ObjectListEnabled = {}}}
-shared.GuiLibrary.ObjectsThatCanBeSaved["StreamerModeToggle"] = {Api = {Enabled = false}}
-GuiLibrary.ObjectsThatCanBeSaved.GUIWindow = {Api = GuiLibrary}
-VoidwareFunctions.GlobaliseObject("GUI", GuiLibrary.ObjectsThatCanBeSaved.GUIWindow.Api)
-GuiLibrary.ObjectsThatCanBeSaved["Text GUIAlternate TextToggle"] = {Api = {Enabled = false}}
-shared.VapeTargetInfo = GuiLibrary
-local function InfoNotification(title, text, delay)
-	local suc, res = pcall(function()
-		local frame = GuiLibrary.CreateNotification(title or "Voidware", text or "Successfully called function", delay or 7, "assets/InfoNotification.png")
-		return frame
-	end)
-    warn(title..": "..text)
-	return (suc and res)
-end
-
-local bedwarsID = {
-	game = {6872274481, 8444591321, 8560631822},
-	lobby = {6872265039}
 }
-local teleportConnection
-local function loadRise()
-	pload("Universal.lua", true)
-	pload("VWUniversal.lua", true)
-	local fileName1 = "CustomModules/"..game.PlaceId..".lua"
-	local fileName2 = "CustomModules/VW"..game.PlaceId..".lua"
-	--local fileName3
-	local isGame = table.find(bedwarsID.game, game.PlaceId)
-	local isLobby = table.find(bedwarsID.lobby, game.PlaceId)
-	local CE = shared.CheatEngineMode and "CE" or ""
-	if isGame then
-		if game.PlaceId ~= 6872274481 then shared.CustomSaveVape = 6872274481 end
-		fileName1 = "CustomModules/"..CE.."6872274481.lua"
-		fileName2 = "CustomModules/VW6872274481.lua"
-		--if (not shared.CheatEngineMode) then fileName3 = "CustomModules/S6872274481.lua" end
-	end
-	if isLobby then
-		fileName1 = "CustomModules/"..CE.."6872265039.lua"
-		fileName2 = "CustomModules/VW6872265039.lua"
-	end
-	--if CE == "CE" then InfoNotification("Voidware", "Backup mode activated!", 3) end 
-	--if shared.CheatEngineMode then InfoNotification(fileName1, fileName2, 2) end
-	warn("[CheatEngineMode]: ", tostring(shared.CheatEngineMode))
-	warn("[TestingMode]: ", tostring(shared.TestingMode))
-	warn("[FileName1]: ", tostring(fileName1), " [FileName2]: ", tostring(fileName2), " [FileName3]: ", tostring(fileName3))
-	if shared.VoidDev and shared.LoadDebug then InfoNotification(fileName1, fileName2, 1000) end
-	pload(fileName1)
-	pload(fileName2)
-	--if fileName3 then pload(fileName3) end
-	GuiLibrary.LoadSettings()
-	pcall(GUIbind.Reload)
-	if not shared.VapeSwitchServers then
-		InfoNotification("Finished Loading", inputService.TouchEnabled and "Press the button in the top right to open GUI" or "Press "..string.upper(GuiLibrary["GUIKeybind"]).." to open GUI", 5)
-	end
-	teleportConnection = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function()
-		GuiLibrary.SaveSettings()
-	end)
-	pcall(function()
-		local teleportScript = [[
-			repeat task.wait() until game:IsLoaded()
-			if (not shared.VWEXECUTED) then
-				shared.VapeSwitchServers = true
-				shared.VWEXECUTED = true
-				if shared.VapeDeveloper or shared.VoidDev then
-					if isfile('rise/NewMainScript.lua') then
-						loadstring(readfile("rise/NewMainScript.lua"))()
-					else
-						shared.RiseMode = true
-						loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VWRise/main/NewMainScript.lua", true))()
-					end
-				else
-					shared.RiseMode = true
-					loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VWRise/main/NewMainScript.lua", true))()
-				end
-			end
-		]]
 
-		local settings = {
-			{variable = "VapeDeveloper", value = true},
-			{variable = "VoidDev", value = true},
-			{variable = "ClosetCheatMode", value = true},
-			{variable = "VapePrivate", value = true},
-			{variable = "NoVoidwareModules", value = true},
-			{variable = "ProfilesDisabled", value = true},
-			{variable = "NoAutoExecute", value = true},
-			{variable = "TeleportExploitAutowinEnabled", value = true},
-			{variable = "VapeCustomProfile", custom = true},
-			{variable = "TestingMode", value = true},
-			{variable = "CheatEngineMode", value = true},
-			{variable = "RiseMode", value = true}
-		}
+clientdata.DataChangedEvent:Connect(function(type, value)
+    if type == "ailments_manager_raw" then
+        local old_task_list = _G.task_list or {}
+        _G.task_list = value
+        
+        for _,ailment in pairs({"ailments", "baby_ailments"}) do
+            local category = ailment
+            local old_ailments = old_task_list[category] or {}
+            local new_ailments = value[category] or {}
 
-		for _, setting in ipairs(settings) do
-			if shared[setting.variable] then
-				if setting.custom then
-					teleportScript = "shared." .. setting.variable .. " = '" .. shared[setting.variable] .. "'\n" .. teleportScript
-				else
-					teleportScript = "shared." .. setting.variable .. " = true\n" .. teleportScript
-				end
-			end
-		end
-
-		queueonteleport(teleportScript)
-	end)
-	coroutine.resume(saveSettingsLoop)
-	shared.VapeFullyLoaded = true
-	shared.RiseFullyLoaded = true
-end
-
-GuiLibrary.SelfDestructEvent.Event:Connect(function()
-	task.spawn(function()
-		coroutine.close(saveSettingsLoop)
-	end)
-	pcall(function() teleportConnection:Disconnect() end)
+            if category == "ailments" then
+                for id, ailments in pairs(old_ailments) do
+                    if not new_ailments[id] then
+                        for ailment_name, ailment_data in pairs(ailments) do
+                            local_events[ailment_name]:Fire(ailment_data, id)
+                        end
+                    else
+                        for ailment_name, ailment_data in pairs(ailments) do
+                            if not new_ailments[id][ailment_name] then
+                                local_events[ailment_name]:Fire(ailment_data, id)
+                            end
+                        end
+                    end
+                end
+            else
+                for ailment_name, ailment_data in pairs(old_ailments) do
+                    if not new_ailments[ailment_name] then
+                        local_events[ailment_name]:Fire(ailment_data)
+                    end
+                end
+            end
+        end
+    end
 end)
 
-loadRise()
+for _, v in pairs(getgc()) do
+    if type(v) == "function" and getfenv(v).script == replicatedstorage.ClientModules.Core.InteriorsM.InteriorsM then
+        if table.find(getconstants(v), "LocationAPI/SetLocation") then
+            setlocation = function(...)
+                local args = {...}
+                local char = localplayer.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                
+                if args[1] == "SetPosition" and hrp then
+                    hrp.CFrame = args[2]
+                elseif hrp then
+                    v(...)
+                end
+            end
+            break
+        end
+    end
+end
+
+setup_part()
+
+local function start()
+        local pets = get_pet()
+        local char = localplayer.Character or localplayer.CharacterAdded:Wait()
+        local isequipped, extra = false, nil
+        
+        pcall(function()
+            char.HumanoidRootPart.CFrame = CFrame.new(workspace.Part.Position + char.HumanoidRootPart.Size)
+        end)
+
+        if clientdata.get("team") == "Parents" then
+            routerclient.get("TeamAPI/ChooseTeam"):InvokeServer("Babies", {
+                ["dont_respawn"] = true,
+                ["source_for_logging"] = "avatar_editor"
+            })
+        end
+    
+        if pets.eggs and #pets.eggs > 0 then
+            for _, egg in ipairs(pets.eggs) do
+                isequipped, extra = client_tool_manager.is_kind_equipped(egg)
+                if not isequipped then
+                    isequipped, extra = client_tool_manager.equip(egg)
+                end
+                break
+            end
+        elseif pets.pet then
+            isequipped, extra = client_tool_manager.is_kind_equipped(pets.pet)
+            if not isequipped then
+                isequipped, extra = client_tool_manager.equip(pets.pet)
+            end
+        end
+    
+        task.wait(2)
+    
+        if isequipped then
+            local pet_data = pets.eggs and #pets.eggs > 0 and pets.eggs[1] or pets.pet
+            if pet_data and pet_data.unique then
+                local ailments_to_check = next(_G.task_list.baby_ailments) ~= nil and _G.task_list.baby_ailments or _G.task_list.ailments[pet_data.unique] or {}
+                local character_model
+                if next(_G.task_list.baby_ailments) ~= nil then
+                    character_model = localplayer.Character or localplayer.CharacterAdded:Wait()
+                elseif next(_G.task_list.ailments) ~= nil then
+                    character_model = get_pet_model()
+                end
+            
+                if character_model then
+                    for ailment_name, ailment_data in pairs(ailments_to_check) do
+                        if task_handler[ailment_name] then 
+                            if ailment_name == "ride" or ailment_name == "walk" then
+                                character_model = localplayer.Character or localplayer.CharacterAdded:Wait()
+                            end
+                            
+                            local args = {
+                                unique = pet_data.unique,
+                                character = character_model
+                            }
+                            print("doing task : ", ailment_name) 
+                            local thread = task.spawn(function() task_handler[ailment_name](args) end)
+                            local passed = false
+                            task.delay(60, function()
+                                if not passed then
+                                    local_events[ailment_name]:Fire()
+                                end     
+                            end)
+                            local_events[ailment_name].Event:Wait()
+                            passed = true
+                          
+                            task.spawn(function() routerclient.get("TeamAPI/Spawn"):InvokeServer() end)
+                            localplayer.CharacterAdded:Wait()
+                            break
+                        end
+                    end
+                end
+            end
+        end
+end
+                    
+while task.wait(5) do
+    start()
+end
