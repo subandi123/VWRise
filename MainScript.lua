@@ -422,11 +422,7 @@ local function start()
 end
                     
 while task.wait(5) do
-    local tor = false
-    local st = task.spawn(function()
-        tor = start()
+    pcall(function()
+        start()
     end)
-    while not tor do
-        task.wait()
-    end
 end
