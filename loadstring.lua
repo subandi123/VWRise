@@ -182,11 +182,11 @@ for _, gc in pairs(getgc(true)) do
                             local col = tonumber(string.sub(boardSlotName, 2, 2))
                             
                             if full == "Red" then
-                                board[col][row] = 1
+                                board[row][col] = 1
                             elseif full == "Blue" then
-                                board[col][row] = 2
+                                board[row][col] = 2
                             else
-                                board[col][row] = 0
+                                board[row][col] = 0
                             end
                         end
                     end
