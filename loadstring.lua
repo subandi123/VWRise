@@ -11,7 +11,7 @@ local board = {
     {0, 0, 0},
     {0, 0, 0}
 }
-local SLOT_MAPPING = {"13", "23", "33", "12", "22", "32", "11", "21", "31"}
+local SLOT_MAPPING = {"11", "12", "13", "21", "22", "23", "31", "32", "33"}
 local EMPTY = 0
 local PLAYER_O = 1
 local PLAYER_X = 2
@@ -178,8 +178,8 @@ for _, gc in pairs(getgc(true)) do
                         
                         if boardSlot then
                             local full = boardSlot:GetAttribute("Full")
-                            local row = tonumber(string.sub(boardSlotName, 2, 2))
-                            local col = tonumber(string.sub(boardSlotName, 1, 1))
+                            local row = tonumber(string.sub(boardSlotName, 1, 1))
+                            local col = tonumber(string.sub(boardSlotName, 2, 2))
                             
                             if full == "Red" then
                                 board[row][col] = 1
@@ -192,6 +192,9 @@ for _, gc in pairs(getgc(true)) do
                     end
                     
                     printBoard(board)
+                    local bestMove = ai:getBestMove(board)
+                    print("choosing ", bestMove)
+                    return bestMove
                 end
                 
                 return OldFunc(...)
