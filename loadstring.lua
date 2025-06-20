@@ -27,6 +27,7 @@ for _, gc in pairs(getgc(true)) do
         if info.name == "AskForChoice" and string.find(info.source:lower(), "tictactoe") then
             local originalFunction; originalFunction = hookfunction(gc, function(...)
                 local boardModel = select(2, ...)
+                print("BoardModel type:", typeof(boardModel))
                 local choicePanel = tictactoeGui:FindFirstChild("Bottom Middle")
                 print(boardModel, choicePanel)
                 
