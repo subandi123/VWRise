@@ -168,8 +168,8 @@ for _, gc in pairs(getgc(true)) do
                 if typeof(boardModel) == "Instance" then
                     for _,slot in pairs(boardModel:GetChildren()) do
                         local full = slot:GetAttribute("Full")
-                        local row = tonumber(string.sub(slot.Name, 2, 2))
-                        local col = tonumber(string.sub(slot.Name, 1, 1))
+                        local row = tonumber(string.sub(slot.Name, 1, 1))
+                        local col = tonumber(string.sub(slot.Name, 2, 2))
                         
                         if full == "Red" then
                             board[row][col] = 1
