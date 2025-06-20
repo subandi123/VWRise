@@ -183,8 +183,7 @@ for _, gc in pairs(getgc(true)) do
             local OldFunc; OldFunc = hookfunction(gc, function(...)
                 local teamcolor = select(3, ...)
                 AI_SIDE = teamcolor == "Red" and 1 or 2
-                print(AI_SIDE)
-                return OldFunc(...)
+                OldFunc(...)
             end)
         end
     end
