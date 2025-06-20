@@ -25,10 +25,10 @@ for _, gc in pairs(getgc(true)) do
     if type(gc) == "function" then
         local info = debug.getinfo(gc)
         if info.name == "AskForChoice" and string.find(info.source:lower(), "tictactoe") then
-            local originalFunction
-            originalFunction = hookfunction(gc, function(...)
+            local originalFunction; originalFunction = hookfunction(gc, function(...)
                 local boardModel = select(2, ...)
                 local choicePanel = tictactoeGui:FindFirstChild("Bottom Middle")
+                print(boardModel, choicePanel)
                 
                 if choicePanel and choicePanel:FindFirstChild("Buttons") then
                    print("yes")
