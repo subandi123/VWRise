@@ -151,39 +151,9 @@ end
 for _, gc in pairs(getgc(true)) do
     if type(gc) == "function" then
         local info = debug.getinfo(gc)
-        if info.name == "AskForChoice" and string.find(info.source:lower(), "tictactoe") then
+        if info.name == "IntroAnimation" and string.find(info.source:lower(), "tictactoe") then
             local OldFunc; OldFunc = hookfunction(gc, function(...)
-                local boardModel = select(2, ...)
-                local ai = TicTacToeAI.new(1)
-    
-                if typeof(boardModel) == "Instance" then
-                    for slotIndex=1,9 do
-                        local boardSlotName = SLOT_MAPPING[slotIndex]
-                        local boardSlot = boardModel and boardModel:FindFirstChild(boardSlotName)
-                        
-                        if boardSlot then
-                            local full = boardSlot:GetAttribute("Full")
-                            local row = tonumber(string.sub(boardSlotName, 1, 1))
-                            local col = tonumber(string.sub(boardSlotName, 2, 2))
-                            
-                            if full == "Red" then
-                                board[row][col] = 1
-                            elseif full == "Blue" then
-                                board[row][col] = 2
-                            else
-                                board[row][col] = 0
-                            end
-                        end
-                    end
-                end
-                
-                return OldFunc(...)
-            end)
-        elseif info.name == "IntroAnimation" and string.find(info.source:lower(), "tictactoe") then
-            local OldFunc; OldFunc = hookfunction(gc, function(...)
-                local teamcolor = select(3, ...)
-                AI_SIDE = teamcolor == "Red" and 1 or 2
-                OldFunc(...)
+                print(...)
             end)
         end
     end
