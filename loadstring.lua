@@ -6,12 +6,6 @@ local tictactoeGui = PlayerGui:WaitForChild("TicTacToe")
 
 local modules = {}
 local remotes = {}
-local board = {
-    {0, 0, 0},
-    {0, 0, 0},
-    {0, 0, 0}
-}
-local SLOT_MAPPING = {"13", "23", "33", "12", "22","32", "11", "21", "31"}
 local EMPTY = 0
 local PLAYER_O = 1
 local PLAYER_X = 2
@@ -172,26 +166,24 @@ for _, gc in pairs(getgc(true)) do
                 local board = {{0,0,0},{0,0,0},{0,0,0}}
     
                 if typeof(boardModel) == "Instance" then
-                    for slotIndex=1,9 do
-                        local boardSlotName = SLOT_MAPPING[slotIndex]
-                        local boardSlot = boardModel and boardModel:FindFirstChild(boardSlotName)
+                    for _,slot in pairs(boardModel:GetChildren()) do
+                        local full = slot:GetAttribute("Full")
+                        local row = tonumber(string.sub(slot.Name, 2, 2))
+                        local col = tonumber(string.sub(slot.Name, 1, 1))
                         
-                        if boardSlot then
-                            local full = boardSlot:GetAttribute("Full")
-                            local row = tonumber(string.sub(boardSlotName, 2, 2))
-                            local col = tonumber(string.sub(boardSlotName, 1, 1))
-                            
-                            if full == "Red" then
-                                board[row][col] = 1
-                            elseif full == "Blue" then
-                                board[row][col] = 2
-                            else
-                                board[row][col] = 0
-                            end
+                        if full == "Red" then
+                            board[row][col] = 1
+                        elseif full == "Blue" then
+                            board[row][col] = 2
+                        else
+                            board[row][col] = 0
                         end
                     end
                     
                     printBoard(board)
+                    local bestMove = ai:getBestMove(board)
+                    print("choosing ", bestMove)
+                    return bestMove
                 end
                 
                 return OldFunc(...)
