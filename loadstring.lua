@@ -26,8 +26,8 @@ for _, gc in pairs(getgc(true)) do
     if type(gc) == "function" then
         local info = debug.getinfo(gc)
         if info.name == "AskForChoice" and string.find(info.source:lower(), "tictactoe") then
-            local originalFunction
-            originalFunction = hookfunction(gc, function(...)
+            
+            local originalFunction; originalFunction = hookfunction(gc, function(...)
                 local boardModel = select(2, ...)
                 
                 if typeof(boardModel) == "Instance" then
@@ -43,7 +43,7 @@ for _, gc in pairs(getgc(true)) do
                                 
                                 if full == "Red" then
                                     board[row][col] = 1
-                                elseif full == "blue" then
+                                elseif full == "Blue" then
                                     board[row][col] = 2
                                 else
                                     board[row][col] = 0
