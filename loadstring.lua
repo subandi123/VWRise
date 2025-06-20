@@ -169,7 +169,7 @@ for _, gc in pairs(getgc(true)) do
                     for _,slot in pairs(boardModel:GetChildren()) do
                         local full = slot:GetAttribute("Full")
                         local col = tonumber(string.sub(slot.Name, 2, 2))
-                        local row = 3 - tonumber(string.sub(slot.Name, 1, 1))
+                        local row = 4 - tonumber(string.sub(slot.Name, 1, 1))
                         
                         if full == "Red" then
                             board[row][col] = 1
