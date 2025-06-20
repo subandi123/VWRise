@@ -178,8 +178,8 @@ for _, gc in pairs(getgc(true)) do
                         
                         if boardSlot then
                             local full = boardSlot:GetAttribute("Full")
-                            local row = tonumber(string.sub(boardSlotName, 1, 1))
-                            local col = tonumber(string.sub(boardSlotName, 2, 2))
+                            local row = tonumber(string.sub(boardSlotName, 2, 2))
+                            local col = tonumber(string.sub(boardSlotName, 1, 1))
                             
                             if full == "Red" then
                                 board[row][col] = 1
