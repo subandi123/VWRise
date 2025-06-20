@@ -11,7 +11,7 @@ local board = {
     {0, 0, 0},
     {0, 0, 0}
 }
-local SLOT_MAPPING = {"11", "12", "13", "21", "22", "23", "31", "32", "33"}
+local SLOT_MAPPING = {"13", "23", "33", "12", "22", "32", "11", "21", "31"}
 local EMPTY = 0
 local PLAYER_O = 1
 local PLAYER_X = 2
