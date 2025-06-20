@@ -176,6 +176,7 @@ for _, gc in pairs(getgc(true)) do
                         end
                     end
                     local move = ai:getBestMove(board)
+                    print(move) 
                     return move
                 end
                 
