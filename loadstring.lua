@@ -5,7 +5,7 @@ local tictactoeGui = PlayerGui:WaitForChild("TicTacToe")
 
 local modules = {}
 local remotes = {}
-local AI_SIDE = 1
+local AI_SIDE = 2
 local ORIENTATION_MAP = {
     ["11"] = {3, 1}, ["12"] = {2, 1}, ["13"] = {1, 1},
     ["21"] = {3, 2}, ["22"] = {2, 2}, ["23"] = {1, 2},
