@@ -164,6 +164,7 @@ for _, gc in pairs(getgc(true)) do
                 local boardModel = select(2, ...)
                 local ai = TicTacToeAI.new(AI_SIDE)
                 local board = {{0,0,0},{0,0,0},{0,0,0}}
+                local map = {7, 8, 9, 4, 5, 6, 1, 2, 3}
     
                 if typeof(boardModel) == "Instance" then
                     for _,slot in pairs(boardModel:GetChildren()) do
@@ -182,8 +183,8 @@ for _, gc in pairs(getgc(true)) do
                     
                     printBoard(board)
                     local bestMove = ai:getBestMove(board)
-                    print("choosing ", bestMove)
-                    return bestMove
+                    print("choosing ", map[bestMove])
+                    return map[bestMove]
                 end
                 
                 return OldFunc(...)
