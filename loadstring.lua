@@ -21,20 +21,7 @@ for _,object in pairs(game:GetDescendants()) do
     end
 end
 
-local function printBoard(board)
-    print("Current Board:")
-    print("-------------")
-    for row = 1, 3 do
-        local line = "|"
-        for col = 1, 3 do
-            local val = board[row][col]
-            line = line .. " " .. (val == 0 and " " or (val == 1 and "O" or "X")) .. " |"
-        end
-        print(line)
-        print("-------------")
-    end
-end
-
+print("running")
 
 for _, gc in pairs(getgc(true)) do
     if type(gc) == "function" then
@@ -62,7 +49,6 @@ for _, gc in pairs(getgc(true)) do
                         end
                     end
                     
-                    printBoard(board)
                     local bestMove = ai:getBestMove(board)
                     print("Choosing ", bestMove)
                     return bestMove
